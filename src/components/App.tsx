@@ -13,10 +13,8 @@ const H1 = styled.h1`
   padding-left: 1rem;
   -webkit-text-fill-color: transparent;
   display: block;
-  margin-block-start: 0.67em;
-  margin-block-end: 0.67em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
+  margin-top: 50px;
+  margin-bottom: 80px;
   font-weight: bold;
   font-family: "Griffy", cursive;
   text-transform: uppercase;
@@ -26,7 +24,8 @@ const App: FC = () => {
   const [newShrinked, setNewShrinked] = useState<LinkData>({
     _id: "",
     output: ""
-  })
+  });
+  const [isEditorDisplayed, setIsEditorDisplayed] = useState<boolean>(false);
   const server_link: string = "https://histl.onrender.com"
 
   useEffect(()=>{
@@ -39,8 +38,19 @@ const App: FC = () => {
   return (
     <>
       <H1>Honey, I Shrunk The Links</H1>
-      <LinkInput shrink_setter={setNewShrinked} server_link={server_link}/>
-      <ShrinkedEditor new_shrink={newShrinked} shrink_setter={setNewShrinked} server_link={server_link}/>
+      <LinkInput 
+        shrink_setter={setNewShrinked} 
+        server_link={server_link} 
+        editor_display={isEditorDisplayed}
+        editor_setter={setIsEditorDisplayed}
+      />
+      <ShrinkedEditor 
+        new_shrink={newShrinked} 
+        shrink_setter={setNewShrinked} 
+        server_link={server_link}
+        editor_display={isEditorDisplayed}
+        editor_setter={setIsEditorDisplayed}
+      />
     </>
   )
 };
