@@ -61,6 +61,11 @@ const LinkInput = ({
             shrink_setter({_id: "", output: ""});
             setInputError(data)
         };
+        // shrink_setter({_id: "", output: server_link});
+        // editor_setter(true);
+        // setTimeout(()=>{
+        //     is_display_shrinked(true)
+        // }, 100);
         (linkInputRef.current as HTMLInputElement).value = "";
     });
 

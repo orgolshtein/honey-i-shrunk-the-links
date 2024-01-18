@@ -94,6 +94,7 @@ const ShrinkedEditor = ({
 
     const shrinkAnother: () => void = () => {
         editor_setter(false);
+        setIsEditorInput(false);
         setTimeout(()=>{
             is_display_shrinked(false)
         },100)

@@ -4,24 +4,36 @@ import { darken } from "polished";
 
 import LinkInput from "./LinkInput"
 import { LinkData } from "../types"
-import { asyncHandler } from "../hooks"
 import ShrinkedEditor from "./ShrinkedEditor"
+import PendingServer from "./PendingServer";
+
+const Header = styled.h1`
+  text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
+  color: #7a85ff4d;
+  font-size: 3rem;
+  padding-left: 1rem;
+  -webkit-text-fill-color: transparent;
+  display: block;
+  margin-top: 50px;
+  margin-bottom: 80px;
+  font-weight: bold;
+  font-family: "Griffy", cursive;
+  text-transform: uppercase;
+`
+const ConnectError = styled.h2`
+  text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
+  color: red;
+  font-size: 2rem;
+  padding-left: 1rem;
+  -webkit-text-fill-color: transparent;
+  display: block;
+  margin-top: 50px;
+  margin-bottom: 80px;
+  font-weight: bold;
+  font-family: "Griffy", cursive;
+`
 
 const AppDiv = styled.div`
-  h1{
-    text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-    color: #7a85ff4d;
-    font-size: 3rem;
-    padding-left: 1rem;
-    -webkit-text-fill-color: transparent;
-    display: block;
-    margin-top: 50px;
-    margin-bottom: 80px;
-    font-weight: bold;
-    font-family: "Griffy", cursive;
-    text-transform: uppercase;
-  }
-
   .shrinked{
     width:80%;
     transition: width 1s;
@@ -96,7 +108,6 @@ const AppDiv = styled.div`
     }
 
     a{
-      text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
       color: #29318cb2;
       font-size: 1rem;
       display: block;
@@ -182,8 +193,7 @@ const AppDiv = styled.div`
     }
 
     a{
-      text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-      color: #29318cb2;
+      color: #3f4bcdb1;
       font-size: 1.5rem;
       display: block;
       font-family: "Griffy", cursive;
@@ -200,40 +210,83 @@ const AppDiv = styled.div`
   }
 `
 
+const FooterDiv = styled.div`
+  font-weight: 300;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: 5rem 10rem 10% 10rem;
+  height: 7.8rem;
+  z-index: 100;
+  text-align: center;
+  margin-top: 5rem;
+  margin-bottom:0;
+
+  p{
+    margin-top: .5rem;
+    font-family: "Griffy", cursive;
+    color: #29318cb2;
+
+    a{
+      color: #29318cb2;
+    }
+  }
+`
+
 const App: FC = () => {
+  const [isServerLoading, setIsServerLoading] = useState<boolean>(true);
+  const [serverError, setServerError] = useState<string>("");
   const [newShrinked, setNewShrinked] = useState<LinkData>({_id: "",output: ""});
   const [isEditorDisplayed, setIsEditorDisplayed] = useState<boolean>(false);
   const [isShrinked, setIsShrinked] = useState<boolean>(false);
   const server_link: string = "https://histl.onrender.com"
 
   useEffect(()=>{
-    (asyncHandler(async () => {
-      await fetch(server_link, {method: 'GET'});
-      await window.alert("Done. Server is awake");
-    }))();
+    (async () => {
+      try{
+        await fetch(server_link, {method: 'GET'});
+      } catch {
+        setServerError("Sorry, server is fast asleep");
+      }finally{
+        setIsServerLoading(false);
+      }
+    })();
   },[])
 
   return (
-    <AppDiv>
-      <h1>Honey, I Shrunk The Links</h1>
-      <div className={isShrinked ? "shrinked" : "full"}>
-        <LinkInput 
-          shrink_setter={setNewShrinked} 
-          server_link={server_link} 
-          editor_display={isEditorDisplayed}
-          editor_setter={setIsEditorDisplayed}
-          is_display_shrinked={setIsShrinked}
-        />
-        <ShrinkedEditor 
-          new_shrink={newShrinked} 
-          shrink_setter={setNewShrinked} 
-          server_link={server_link}
-          editor_display={isEditorDisplayed}
-          editor_setter={setIsEditorDisplayed}
-          is_display_shrinked={setIsShrinked}
-        />
-      </div>
-    </AppDiv>
+    <>
+      <Header>Honey, I Shrunk The Links</Header>
+      {
+        serverError ?
+        <ConnectError>{serverError}</ConnectError> :
+        isServerLoading ? 
+        <PendingServer /> :
+        <AppDiv>
+          <div className={isShrinked ? "shrinked" : "full"}>
+            <LinkInput 
+              shrink_setter={setNewShrinked} 
+              server_link={server_link} 
+              editor_display={isEditorDisplayed}
+              editor_setter={setIsEditorDisplayed}
+              is_display_shrinked={setIsShrinked}
+            />
+            <ShrinkedEditor 
+              new_shrink={newShrinked} 
+              shrink_setter={setNewShrinked} 
+              server_link={server_link}
+              editor_display={isEditorDisplayed}
+              editor_setter={setIsEditorDisplayed}
+              is_display_shrinked={setIsShrinked}
+            />
+          </div>
+      </AppDiv>
+      }
+      <FooterDiv>
+        <p>Created by Or Golshtein:</p> 
+        <p><a href="https://orgolshtein.wixsite.com/portfolio" target="_blank">https://orgolshtein.wixsite.com/portfolio</a></p> 
+        <p><a href="https://github.com/orgolshtein" target="_blank">github.com/orgolshtein</a></p>
+      </FooterDiv>
+    </>
   )
 };
 
