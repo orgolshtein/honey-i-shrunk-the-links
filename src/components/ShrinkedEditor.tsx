@@ -16,86 +16,8 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
     margin-left: 30%;
     margin-top: 4%;
 
-    .shrinked{
-        display: flex;
-        flex-direction: row;
-        gap: 33px;
-
-        button{
-        width: 90px;
-        height: 25px;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
-        border-radius: 3px;
-        color: #548498;
-        font-size: 12px;
-        cursor: pointer;
-        
-            &:hover{
-                color: ${darken(0.5, "#548498")};
-                background: ${darken(0.5, "#3949fb4d")};
-            }
-        }
-    }
-
-    button{
-        width: 80px;
-        height: 25px;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
-        border-radius: 3px;
-        color: #548498;
-        font-size: 15px;
-        cursor: pointer;
-        
-        &:hover{
-            color: ${darken(0.5, "#548498")};
-            background: ${darken(0.5, "#3949fb4d")};
-        }
-    }
-
-    a{
-        text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-        color: #29318cb2;
-        font-size: 1rem;
-        display: block;
-        margin-block-start: 0.67em;
-        margin-block-end: 0.67em;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        font-family: "Griffy", cursive;
-        text-decoration: underline;
-        width: 225px;
-    }
-
     .editor_input{
         display: ${(props)=>props.$is_input ? "block" : "none"};
-
-        form{
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-            align-items: center;
-            
-            input{
-                height: 30px;
-                width: 240px;
-                font-size: 12px;
-                padding-left: 10px;
-                border: #3949fb4d solid 1.5px;
-                border-radius: 4px;
-                color: #0310a588;
-                
-                &:focus{
-                    outline-width: 0;
-                }
-    
-                &::placeholder {
-                    color: #3949fb4d;
-                    opacity: 1;
-                }
-            }
-        }
     }
 
     p{
@@ -131,7 +53,8 @@ interface EditorProps {
     shrink_setter: (new_shrink: LinkData) => void,
     server_link: string,
     editor_display: boolean,
-    editor_setter: (editor_display: boolean) => void
+    editor_setter: (editor_display: boolean) => void,
+    is_display_shrinked: (shrinked_display: boolean) => void
 }
 
 const ShrinkedEditor = ({ 
@@ -139,7 +62,8 @@ const ShrinkedEditor = ({
     shrink_setter, 
     server_link, 
     editor_display,
-    editor_setter
+    editor_setter, 
+    is_display_shrinked
 }: EditorProps) => {
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
     const [editorError, setEditorError] = useState<string>("");
@@ -170,6 +94,9 @@ const ShrinkedEditor = ({
 
     const shrinkAnother: () => void = () => {
         editor_setter(false);
+        setTimeout(()=>{
+            is_display_shrinked(false)
+        },100)
     };
 
     const toggleInput: () => void = () => {
@@ -178,8 +105,8 @@ const ShrinkedEditor = ({
 
     return (
         <ShrinkedEditorDiv $is_displayed={editor_display} $is_input={isEditorInput}>
-            <div className="shrinked">
-                <a href={new_shrink.output}>{new_shrink.output}</a>
+            <div className="shrinked_output">
+                <a href={new_shrink.output} target="_blank">{new_shrink.output}</a>
                 <button type="button" onClick={toggleInput}>Edit Shrinked?</button>
             </div>
             <div className="editor_input">
