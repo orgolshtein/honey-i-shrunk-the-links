@@ -18,7 +18,7 @@ const PendingServerDiv = styled.div`
     }
 `
 
-const PendingServer: FC = () => {
+const PendingServer: FC = (): JSX.Element => {
     return (
         <PendingServerDiv>
             <div>

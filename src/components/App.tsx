@@ -3,9 +3,10 @@ import styled from "styled-components"
 import { darken } from "polished";
 
 import LinkInput from "./LinkInput"
-import { LinkData } from "../types"
+import { LinkData, StatsData } from "../types"
 import ShrinkedEditor from "./ShrinkedEditor"
 import PendingServer from "./PendingServer";
+import TopSites from "./TopSites";
 
 const Header = styled.h1`
   text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
@@ -54,6 +55,7 @@ const AppDiv = styled.div`
         border: #3949fb4d solid 1.5px;
         border-radius: 4px;
         color: #0310a588;
+        font-family: "Griffy", cursive;
         transition: all 1s;
         
         &:focus{
@@ -63,6 +65,7 @@ const AppDiv = styled.div`
         &::placeholder {
             color: #3949fb4d;
             opacity: 1;
+            transition: all 1s;
         }
       }
 
@@ -76,6 +79,7 @@ const AppDiv = styled.div`
         font-size: 12px;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
+        font-family: "Griffy", cursive;
         
         &:hover{
           color: ${darken(0.5, "#548498")};
@@ -99,6 +103,7 @@ const AppDiv = styled.div`
         font-size: 12px;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
+        font-family: "Griffy", cursive;
         
         &:hover{
           color: ${darken(0.5, "#548498")};
@@ -133,11 +138,12 @@ const AppDiv = styled.div`
       input{
         height: 60px;
         width: 500px;
-        font-size: 20px;
+        font-size: 12px;
         padding-left: 10px;
         border: #3949fb4d solid 1.5px;
         border-radius: 4px;
         color: #0310a588;
+        font-family: "Griffy", cursive;
         transition: all 1s;
         
         &:focus{
@@ -147,6 +153,8 @@ const AppDiv = styled.div`
         &::placeholder {
           color: #3949fb4d;
           opacity: 1;
+          font-size: 20px;
+          transition: all 1s;
         }
       }
 
@@ -160,6 +168,7 @@ const AppDiv = styled.div`
         font-size: 20px;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
+        font-family: "Griffy", cursive;
         
         &:hover{
           color: ${darken(0.5, "#548498")};
@@ -184,6 +193,7 @@ const AppDiv = styled.div`
         font-size: 12px;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
+        font-family: "Griffy", cursive;
         
         &:hover{
           color: ${darken(0.5, "#548498")};
@@ -233,18 +243,30 @@ const FooterDiv = styled.div`
   }
 `
 
-const App: FC = () => {
+const App: FC = (): JSX.Element => {
   const [isServerLoading, setIsServerLoading] = useState<boolean>(true);
   const [serverError, setServerError] = useState<string>("");
   const [newShrinked, setNewShrinked] = useState<LinkData>({_id: "",output: ""});
   const [isEditorDisplayed, setIsEditorDisplayed] = useState<boolean>(false);
-  const [isShrinked, setIsShrinked] = useState<boolean>(false);
+  const [isDisplayShrinked, setIsDisplayShrinked] = useState<boolean>(false);
+  const [topShrinked, setTopShrinked] = useState<StatsData[]>([]);
+  const [topVisited, setTopVisited] = useState<StatsData[]>([]);
+  const [lastVisited, setLastVisited] = useState<StatsData[]>([]);
   const server_link: string = "https://histl.onrender.com"
+  const analytics_router: string = "/api/analytics/"
 
   useEffect(()=>{
     (async () => {
       try{
-        await fetch(server_link, {method: 'GET'});
+        const shrinks_data: Response = await fetch(`${server_link}${analytics_router}most-redirected/4`);
+        const shrinks_array: StatsData[] = await shrinks_data.json();
+        setTopShrinked(shrinks_array);
+        const visited_data: Response = await fetch(`${server_link}${analytics_router}most-visited/4`);
+        const visited_array: StatsData[] = await visited_data.json();
+        setTopVisited(visited_array)
+        const last_visited_data: Response = await fetch(`${server_link}${analytics_router}last-visited/4`);
+        const last_visited_array: StatsData[] = await last_visited_data.json();
+        setLastVisited(last_visited_array)
       } catch {
         setServerError("Sorry, server is fast asleep");
       }finally{
@@ -262,13 +284,13 @@ const App: FC = () => {
         isServerLoading ? 
         <PendingServer /> :
         <AppDiv>
-          <div className={isShrinked ? "shrinked" : "full"}>
+          <div className={isDisplayShrinked ? "shrinked" : "full"}>
             <LinkInput 
               shrink_setter={setNewShrinked} 
               server_link={server_link} 
               editor_display={isEditorDisplayed}
               editor_setter={setIsEditorDisplayed}
-              is_display_shrinked={setIsShrinked}
+              is_display_shrinked={setIsDisplayShrinked}
             />
             <ShrinkedEditor 
               new_shrink={newShrinked} 
@@ -276,9 +298,14 @@ const App: FC = () => {
               server_link={server_link}
               editor_display={isEditorDisplayed}
               editor_setter={setIsEditorDisplayed}
-              is_display_shrinked={setIsShrinked}
+              is_display_shrinked={setIsDisplayShrinked}
             />
           </div>
+          <TopSites
+            top_shrinked={topShrinked}
+            top_visited={topVisited}
+            last_visited={lastVisited}
+          />
       </AppDiv>
       }
       <FooterDiv>

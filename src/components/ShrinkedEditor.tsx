@@ -40,6 +40,7 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
         cursor: pointer;
         margin-top: 15px;
         margin-left: 10px;
+        font-family: "Griffy", cursive;
         
         &:hover{
             color: ${darken(0.5, "#548498")};
@@ -64,7 +65,7 @@ const ShrinkedEditor = ({
     editor_display,
     editor_setter, 
     is_display_shrinked
-}: EditorProps) => {
+}: EditorProps): JSX.Element => {
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
     const [editorError, setEditorError] = useState<string>("");
     const editorInputRef = useRef<HTMLInputElement>(null);
