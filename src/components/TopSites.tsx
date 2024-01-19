@@ -71,7 +71,7 @@ const TopSites = ({
                 {
                 top_shrinked?.map((item) => (
                     <tr>
-                        <td>{item.site.replace(/https:\/\/|www./g, "")}</td>
+                        <td>{item.site}</td>
                         <td>{item.counter}</td>
                     </tr>
                         ))
@@ -90,7 +90,7 @@ const TopSites = ({
                 {
                 top_visited?.map((item) => (
                     <tr>
-                        <td>{item.site.replace(/https:\/\/|www./g, "")}</td>
+                        <td>{item.site}</td>
                         <td>{item.counter}</td>
                     </tr>
                         ))
@@ -109,8 +109,8 @@ const TopSites = ({
                 {
                 last_visited?.map((item) => (
                     <tr>
-                        <td>{item.site.replace(/https:\/\/|www./g, "")}</td>
-                        <td>{item.visit_date?.replace("GMT+0000 (Coordinated Universal Time)", "")}</td>
+                        <td>{item.site}</td>
+                        <td>{item.visit_date}</td>
                     </tr>
                         ))
                 }
