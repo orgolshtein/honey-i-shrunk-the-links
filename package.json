@@ -13,6 +13,7 @@
     "polished": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-responsive-carousel": "^3.2.23",
     "react-textra": "^0.2.0",
     "styled-components": "^6.1.8",
     "styled-reset": "^4.5.2"

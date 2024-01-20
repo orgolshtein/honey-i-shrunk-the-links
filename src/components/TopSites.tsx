@@ -1,121 +1,71 @@
 import styled from "styled-components";
+import { Fragment } from "react";
+
 import { StatsData } from "../types";
 
 const TopSitesDiv = styled.div`
     margin-top: 5rem;
 `
 
-const StatsTable = styled.table`
-    box-sizing: border-box;
-    border: none;
+const StatsGrid = styled.div`
+    display: grid;
+    grid-template-columns: auto;
+    row-gap: .5rem;
+    grid-template-rows:auto;
     margin: 1rem;
+    margin-left: 10%;
     color: #29318cb2;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     font-family: "Griffy", cursive;
     text-align: left;
-    width: 45rem;
-    height: 10rem;
 
-    td, th {
-        box-sizing: border-box;
-        border: none;
-        vertical-align: middle;
-        padding-left: 1rem;
+    .stat{
+        text-align: center;
     }
 
-    th {
+    .stat_head{
         font-weight: bold;
-        height: 1.5rem;
-    }
-
-    tr{
-        th:last-child, td:last-child{
-            text-align: center;
-        }
     }
 `
 
 const StatsHeader = styled.h2`
     color: #29318c56;
+    grid-column-start: 1;
+    grid-column-end: 3;
     font-size: 2rem;
-    display: block;
     margin-top: 3rem;
     margin-bottom: 2rem;
     font-weight: bold;
     font-family: "Griffy", cursive;
-    padding-left: 2rem;
+    text-align: center;
 `
 
 interface TopSitesProps {
-    top_shrinked: StatsData[]
-    top_visited: StatsData[]
-    last_visited: StatsData[]
+    header: string
+    stat: string
+    stats_data: StatsData[]
 }
 
 const TopSites = ({
-    top_shrinked,
-    top_visited,
-    last_visited
+    header,
+    stat,
+    stats_data
 }: TopSitesProps): JSX.Element => {
     return(
         <TopSitesDiv>
-            <StatsHeader>Top Shrinked Sites:</StatsHeader>
-            <StatsTable>
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Shrinks</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <StatsGrid>
+                <StatsHeader>{header}</StatsHeader>
+                <div className="stat_head">Site</div>
+                <div className="stat stat_head">{stat}</div>
                 {
-                top_shrinked?.map((item) => (
-                    <tr>
-                        <td>{item.site}</td>
-                        <td>{item.counter}</td>
-                    </tr>
-                        ))
+                stats_data?.map((item, i) => (
+                <Fragment key={i}>
+                    <div>{item.site.length > 49 ? item.site.substring(0,47) + "..." : item.site}</div>
+                    <div className="stat">{stat === "Last Visited" ? item.visit_date : item.counter}</div>
+                </Fragment>
+                ))
                 }
-                </tbody>
-            </StatsTable>
-            <StatsHeader>Top Visited Sites:</StatsHeader>
-            <StatsTable>
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Visits</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {
-                top_visited?.map((item) => (
-                    <tr>
-                        <td>{item.site}</td>
-                        <td>{item.counter}</td>
-                    </tr>
-                        ))
-                }
-                </tbody>
-            </StatsTable>
-            <StatsHeader>Latest Visits:</StatsHeader>
-            <StatsTable>
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Last Visited</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {
-                last_visited?.map((item) => (
-                    <tr>
-                        <td>{item.site}</td>
-                        <td>{item.visit_date}</td>
-                    </tr>
-                        ))
-                }
-                </tbody>
-            </StatsTable> 
+            </StatsGrid>
         </TopSitesDiv>
     )
 };

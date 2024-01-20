@@ -1,6 +1,8 @@
 import { FC, useEffect, useState } from "react"
 import styled from "styled-components"
 import { darken } from "polished";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
 
 import LinkInput from "./LinkInput"
 import { LinkData, StatsData } from "../types"
@@ -301,11 +303,38 @@ const App: FC = (): JSX.Element => {
               is_display_shrinked={setIsDisplayShrinked}
             />
           </div>
-          <TopSites
-            top_shrinked={topShrinked}
-            top_visited={topVisited}
-            last_visited={lastVisited}
-          />
+          <Carousel
+            autoPlay={true}
+            centerMode={false}
+            centerSlidePercentage={80}
+            infiniteLoop={true}
+            interval={6000}
+            showArrows={false}
+            showStatus={false}
+            showIndicators={false}
+            showThumbs={false}
+            stopOnHover={false}
+            swipeable={false}
+            transitionTime={2000}
+            useKeyboardArrows={false}
+            width="48rem"
+          >
+            <TopSites
+              header="Top Shrinked Sites:"
+              stat="Shrinks"
+              stats_data={topShrinked}
+            />
+            <TopSites
+              header="Top Visited Sites:"
+              stat="Visits"
+              stats_data={topVisited}
+            />
+            <TopSites
+              header="Last Visited Sites:"
+              stat="Last Visited"
+              stats_data={lastVisited}
+            />
+          </Carousel>
       </AppDiv>
       }
       <FooterDiv>

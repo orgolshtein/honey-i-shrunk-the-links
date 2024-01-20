@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
-import { LinkData } from "../types";
-import { asyncHandler } from "../hooks";
 import { darken } from "polished";
 import styled from "styled-components";
+
+import { LinkData } from "../types";
+import { asyncHandler } from "../hooks";
 
 interface EditorDivProps {
     $is_displayed: boolean,

@@ -5,7 +5,7 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
 ${Reset}
 html,
 body {
-  height: 220%;
+  height: 150%;
   display: flex;
   flex-direction: column;
   align-items: center;
