@@ -3,10 +3,6 @@ import { Fragment } from "react";
 
 import { StatsData } from "../types";
 
-const TopSitesDiv = styled.div`
-    margin-top: 5rem;
-`
-
 const StatsGrid = styled.div`
     display: grid;
     grid-template-columns: auto;
@@ -52,7 +48,7 @@ const TopSites = ({
     stats_data
 }: TopSitesProps): JSX.Element => {
     return(
-        <TopSitesDiv>
+        <div>
             <StatsGrid>
                 <StatsHeader>{header}</StatsHeader>
                 <div className="stat_head">Site</div>
@@ -61,12 +57,12 @@ const TopSites = ({
                 stats_data?.map((item, i) => (
                 <Fragment key={i}>
                     <div>{item.site.length > 49 ? item.site.substring(0,47) + "..." : item.site}</div>
-                    <div className="stat">{stat === "Last Visited" ? item.visit_date : item.counter}</div>
+                    <div className="stat">{stat === "Last Visit" ? item.visit_date : item.counter}</div>
                 </Fragment>
                 ))
                 }
             </StatsGrid>
-        </TopSitesDiv>
+        </div>
     )
 };
 

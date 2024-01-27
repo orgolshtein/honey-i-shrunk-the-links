@@ -9,6 +9,8 @@ import { LinkData, StatsData } from "../types"
 import ShrinkedEditor from "./ShrinkedEditor"
 import PendingServer from "./PendingServer";
 import TopSites from "./TopSites";
+import ShrinkedStats from "./ShrinkedStats";
+import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
 
 const Header = styled.h1`
   text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
@@ -223,15 +225,12 @@ const AppDiv = styled.div`
 `
 
 const FooterDiv = styled.div`
-  font-weight: 300;
   position: relative;
   bottom: 0;
   width: 100%;
-  padding: 5rem 10rem 10% 10rem;
-  height: 7.8rem;
-  z-index: 100;
+  padding-top: 2rem;
+  z-index: 1;
   text-align: center;
-  margin-top: 5rem;
   margin-bottom:0;
 
   p{
@@ -246,36 +245,31 @@ const FooterDiv = styled.div`
 `
 
 const App: FC = (): JSX.Element => {
-  const [isServerLoading, setIsServerLoading] = useState<boolean>(true);
   const [serverError, setServerError] = useState<string>("");
   const [newShrinked, setNewShrinked] = useState<LinkData>({_id: "",output: ""});
+  const [isServerLoading, setIsServerLoading] = useState<boolean>(true);
   const [isEditorDisplayed, setIsEditorDisplayed] = useState<boolean>(false);
   const [isDisplayShrinked, setIsDisplayShrinked] = useState<boolean>(false);
   const [topShrinked, setTopShrinked] = useState<StatsData[]>([]);
   const [topVisited, setTopVisited] = useState<StatsData[]>([]);
   const [lastVisited, setLastVisited] = useState<StatsData[]>([]);
-  const server_link: string = "https://histl.onrender.com"
-  const analytics_router: string = "/api/analytics/"
-
-  useEffect(()=>{
-    (async () => {
+  
+  useEffect((): void =>{
+    (async (): Promise<void> => {
       try{
-        const shrinks_data: Response = await fetch(`${server_link}${analytics_router}most-redirected/4`);
-        const shrinks_array: StatsData[] = await shrinks_data.json();
+        const shrinks_array = await fetchTopShrinked();
         setTopShrinked(shrinks_array);
-        const visited_data: Response = await fetch(`${server_link}${analytics_router}most-visited/4`);
-        const visited_array: StatsData[] = await visited_data.json();
+        const visited_array = await fetchTopVisited();
         setTopVisited(visited_array)
-        const last_visited_data: Response = await fetch(`${server_link}${analytics_router}last-visited/4`);
-        const last_visited_array: StatsData[] = await last_visited_data.json();
-        setLastVisited(last_visited_array)
+        const last_visited = await fetchLastVisited();
+        setLastVisited(last_visited)
       } catch {
         setServerError("Sorry, server is fast asleep");
       }finally{
         setIsServerLoading(false);
       }
     })();
-  },[])
+  },[]);
 
   return (
     <>
@@ -289,7 +283,6 @@ const App: FC = (): JSX.Element => {
           <div className={isDisplayShrinked ? "shrinked" : "full"}>
             <LinkInput 
               shrink_setter={setNewShrinked} 
-              server_link={server_link} 
               editor_display={isEditorDisplayed}
               editor_setter={setIsEditorDisplayed}
               is_display_shrinked={setIsDisplayShrinked}
@@ -297,7 +290,6 @@ const App: FC = (): JSX.Element => {
             <ShrinkedEditor 
               new_shrink={newShrinked} 
               shrink_setter={setNewShrinked} 
-              server_link={server_link}
               editor_display={isEditorDisplayed}
               editor_setter={setIsEditorDisplayed}
               is_display_shrinked={setIsDisplayShrinked}
@@ -330,11 +322,16 @@ const App: FC = (): JSX.Element => {
               stats_data={topVisited}
             />
             <TopSites
-              header="Last Visited Sites:"
-              stat="Last Visited"
+              header="Recently Visited:"
+              stat="Last Visit"
               stats_data={lastVisited}
             />
           </Carousel>
+          <ShrinkedStats stats_setter={{
+            top_shrinks: setTopShrinked, 
+            top_visited: setTopVisited, 
+            last_visited: setLastVisited
+            }}/>
       </AppDiv>
       }
       <FooterDiv>

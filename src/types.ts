@@ -8,3 +8,10 @@ export interface StatsData {
   counter: number;
   visit_date?: string
 }
+
+export interface PersonalLinkData {
+  target: string;
+  link: string;
+  visits: number;
+  last_visit: string;
+}

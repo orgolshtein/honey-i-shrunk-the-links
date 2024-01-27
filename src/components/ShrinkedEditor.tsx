@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { LinkData } from "../types";
 import { asyncHandler } from "../hooks";
+import { server_link } from "../api";
 
 interface EditorDivProps {
     $is_displayed: boolean,
@@ -53,7 +54,6 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
 interface EditorProps {
     new_shrink: LinkData,
     shrink_setter: (new_shrink: LinkData) => void,
-    server_link: string,
     editor_display: boolean,
     editor_setter: (editor_display: boolean) => void,
     is_display_shrinked: (shrinked_display: boolean) => void
@@ -61,8 +61,7 @@ interface EditorProps {
 
 const ShrinkedEditor = ({ 
     new_shrink, 
-    shrink_setter, 
-    server_link, 
+    shrink_setter,
     editor_display,
     editor_setter, 
     is_display_shrinked

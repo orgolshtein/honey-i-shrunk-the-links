@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { LinkData } from "../types";
 import { asyncHandler } from "../hooks";
+import { server_link } from "../api";
 
 interface InputDivProps {
     $is_editor_displayed: boolean
@@ -23,12 +24,12 @@ const LinkInputDiv = styled.div<InputDivProps>`
         text-align: center;
         margin-top: 10px;
         font-family: "Griffy", cursive;
+        padding-bottom: 3rem;
     }
 `
 
 interface LinkInputProps {
     shrink_setter: (new_shrink: LinkData) => void,
-    server_link: string,
     editor_display: boolean,
     editor_setter: (editor_display: boolean) => void,
     is_display_shrinked: (shrinked_display: boolean) => void
@@ -36,7 +37,6 @@ interface LinkInputProps {
 
 const LinkInput = ({ 
     shrink_setter, 
-    server_link, 
     editor_display, 
     editor_setter, 
     is_display_shrinked 
@@ -45,11 +45,17 @@ const LinkInput = ({
     const linkInputRef = useRef<HTMLInputElement>(null);
     
     const shrinkLink: () => void = asyncHandler(async (): Promise<void> => {
-        const target: string = (linkInputRef.current as HTMLInputElement).value.toString()
-        .replace("\"","").replace("http://", "").replace("https://", "");
         const data: LinkData | string = await (await fetch(
-            `${server_link}/api/create/${target}`, 
-            { method: 'POST' }
+            `${server_link}/api/create`, 
+            { 
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    target: (linkInputRef.current as HTMLInputElement).value.toString()
+                }) 
+            }
             )).json();
         if (typeof data !== "string"){
             shrink_setter({...data, _id: data._id.toString()});
@@ -79,7 +85,7 @@ const LinkInput = ({
                 <input type="text" placeholder="Input Link to Shrink" ref={linkInputRef} onClick={() => setInputError("")}/>
                 <button type="button" onClick={shrinkLink}>Submit</button>
             </form>
-            {inputError !== "" ? <p>{inputError}</p> : null}
+            <p>{inputError}</p>
         </LinkInputDiv>
       )
 };
