@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { darken } from "polished";
 import styled from "styled-components";
 
-import { LinkData } from "../types";
-import { asyncHandler } from "../hooks";
-import { server_link } from "../api";
+import { LinkData, PersonalLinkData, StatsData } from "../types";
+import asyncHandler from "../hooks/useAsyncHandler";
+import { patchShrinked } from "../api";
+import { updateStats } from "../hooks/useUpdateStats";
 
 interface EditorDivProps {
     $is_displayed: boolean,
@@ -57,6 +58,12 @@ interface EditorProps {
     editor_display: boolean,
     editor_setter: (editor_display: boolean) => void,
     is_display_shrinked: (shrinked_display: boolean) => void
+    stats_setter: {
+        top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
+        top_visited: Dispatch<SetStateAction<StatsData[]>>, 
+        last_visited: Dispatch<SetStateAction<StatsData[]>>,
+        selected: Dispatch<SetStateAction<PersonalLinkData>>
+    }
 }
 
 const ShrinkedEditor = ({ 
@@ -64,7 +71,8 @@ const ShrinkedEditor = ({
     shrink_setter,
     editor_display,
     editor_setter, 
-    is_display_shrinked
+    is_display_shrinked,
+    stats_setter
 }: EditorProps): JSX.Element => {
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
     const [editorError, setEditorError] = useState<string>("");
@@ -72,18 +80,7 @@ const ShrinkedEditor = ({
 
     const editShrinked: () => void = asyncHandler(async (): Promise<void> => {
         const edited_shrink: string = (editorInputRef.current as HTMLInputElement).value.toString();
-        const data: LinkData = await (await fetch(
-            `${server_link}/api/edit/${new_shrink._id}`, 
-            {
-                method: 'PATCH',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    new_link: edited_shrink
-                })
-            }
-            )).json();
+        const data: LinkData = await patchShrinked(new_shrink, edited_shrink);
             if (typeof data !== "string"){
                 shrink_setter({...data, _id: data._id.toString()}); 
                 (editorInputRef.current as HTMLInputElement).value = "";
@@ -108,12 +105,21 @@ const ShrinkedEditor = ({
     return (
         <ShrinkedEditorDiv $is_displayed={editor_display} $is_input={isEditorInput}>
             <div className="shrinked_output">
-                <a href={new_shrink.output} target="_blank">{new_shrink.output}</a>
+                <span onClick={
+                    () => updateStats(stats_setter)
+                    }>
+                    <a href={new_shrink.output} target="_blank">{new_shrink.output}</a>
+                </span>
                 <button type="button" onClick={toggleInput}>Edit Shrinked?</button>
             </div>
             <div className="editor_input">
                 <form action="">
-                    <input type="text" placeholder="Input New Shrinked" ref={editorInputRef} onClick={() => setEditorError("")}/>
+                    <input 
+                        type="text" 
+                        placeholder="Input New Shrinked" 
+                        ref={editorInputRef} 
+                        onClick={() => setEditorError("")}
+                    />
                     <button type="button" onClick={editShrinked}>Submit</button>
                 </form>
                 {editorError !== "" ? <p>{editorError}</p> : null}

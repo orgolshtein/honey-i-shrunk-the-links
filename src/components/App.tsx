@@ -5,12 +5,13 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 
 import LinkInput from "./LinkInput"
-import { LinkData, StatsData } from "../types"
+import { LinkData, PersonalLinkData, StatsData } from "../types"
 import ShrinkedEditor from "./ShrinkedEditor"
 import PendingServer from "./PendingServer";
 import TopSites from "./TopSites";
 import ShrinkedStats from "./ShrinkedStats";
 import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
+import ServerError from "./ServerError";
 
 const Header = styled.h1`
   text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
@@ -24,18 +25,6 @@ const Header = styled.h1`
   font-weight: bold;
   font-family: "Griffy", cursive;
   text-transform: uppercase;
-`
-const ConnectError = styled.h2`
-  text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-  color: red;
-  font-size: 2rem;
-  padding-left: 1rem;
-  -webkit-text-fill-color: transparent;
-  display: block;
-  margin-top: 50px;
-  margin-bottom: 80px;
-  font-weight: bold;
-  font-family: "Griffy", cursive;
 `
 
 const AppDiv = styled.div`
@@ -245,27 +234,33 @@ const FooterDiv = styled.div`
 `
 
 const App: FC = (): JSX.Element => {
-  const [serverError, setServerError] = useState<string>("");
   const [newShrinked, setNewShrinked] = useState<LinkData>({_id: "",output: ""});
+  const [isServerError, setIsServerError] = useState<boolean>(false);
   const [isServerLoading, setIsServerLoading] = useState<boolean>(true);
   const [isEditorDisplayed, setIsEditorDisplayed] = useState<boolean>(false);
   const [isDisplayShrinked, setIsDisplayShrinked] = useState<boolean>(false);
   const [topShrinked, setTopShrinked] = useState<StatsData[]>([]);
   const [topVisited, setTopVisited] = useState<StatsData[]>([]);
   const [lastVisited, setLastVisited] = useState<StatsData[]>([]);
+  const [selectedShrinked, setSelectedShrinked] = useState<PersonalLinkData>({
+    target: "",
+    link: "",
+    visits: 0,
+    last_visit: ""
+  });
   
   useEffect((): void =>{
     (async (): Promise<void> => {
-      try{
-        const shrinks_array = await fetchTopShrinked();
+      try {
+        const shrinks_array: StatsData[] = await fetchTopShrinked();
         setTopShrinked(shrinks_array);
-        const visited_array = await fetchTopVisited();
+        const visited_array: StatsData[] = await fetchTopVisited();
         setTopVisited(visited_array)
-        const last_visited = await fetchLastVisited();
+        const last_visited: StatsData[] = await fetchLastVisited();
         setLastVisited(last_visited)
       } catch {
-        setServerError("Sorry, server is fast asleep");
-      }finally{
+        setIsServerError(true);
+      } finally {
         setIsServerLoading(false);
       }
     })();
@@ -275,10 +270,11 @@ const App: FC = (): JSX.Element => {
     <>
       <Header>Honey, I Shrunk The Links</Header>
       {
-        serverError ?
-        <ConnectError>{serverError}</ConnectError> :
         isServerLoading ? 
-        <PendingServer /> :
+        <PendingServer /> 
+        : isServerError ? 
+        <ServerError />
+        :
         <AppDiv>
           <div className={isDisplayShrinked ? "shrinked" : "full"}>
             <LinkInput 
@@ -293,6 +289,12 @@ const App: FC = (): JSX.Element => {
               editor_display={isEditorDisplayed}
               editor_setter={setIsEditorDisplayed}
               is_display_shrinked={setIsDisplayShrinked}
+              stats_setter={{
+                top_shrinks: setTopShrinked, 
+                top_visited: setTopVisited, 
+                last_visited: setLastVisited,
+                selected: setSelectedShrinked
+              }}
             />
           </div>
           <Carousel
@@ -327,11 +329,17 @@ const App: FC = (): JSX.Element => {
               stats_data={lastVisited}
             />
           </Carousel>
-          <ShrinkedStats stats_setter={{
-            top_shrinks: setTopShrinked, 
-            top_visited: setTopVisited, 
-            last_visited: setLastVisited
-            }}/>
+          <ShrinkedStats 
+            selected={selectedShrinked}
+            stats_setter={{
+              top_shrinks: setTopShrinked, 
+              top_visited: setTopVisited, 
+              last_visited: setLastVisited,
+              selected: setSelectedShrinked
+            }}
+            editor_setter={setIsEditorDisplayed}
+            is_display_shrinked={setIsDisplayShrinked}
+            />
       </AppDiv>
       }
       <FooterDiv>

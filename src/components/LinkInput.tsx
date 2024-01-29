@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { LinkData } from "../types";
-import { asyncHandler } from "../hooks";
-import { server_link } from "../api";
+import asyncHandler from "../hooks/useAsyncHandler";
+import { postNewShrinked, server_link } from "../api";
 
 interface InputDivProps {
     $is_editor_displayed: boolean
@@ -44,19 +44,17 @@ const LinkInput = ({
     const [inputError, setInputError] = useState<string>("");
     const linkInputRef = useRef<HTMLInputElement>(null);
     
-    const shrinkLink: () => void = asyncHandler(async (): Promise<void> => {
-        const data: LinkData | string = await (await fetch(
-            `${server_link}/api/create`, 
-            { 
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    target: (linkInputRef.current as HTMLInputElement).value.toString()
-                }) 
+    useEffect(()=>{
+        window.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.querySelector("button")?.click();
             }
-            )).json();
+        });
+    }, []);
+    
+    const shrinkLink: () => void = asyncHandler(async (): Promise<void> => {
+        const data: LinkData | string = await postNewShrinked(linkInputRef);
         if (typeof data !== "string"){
             shrink_setter({...data, _id: data._id.toString()});
             editor_setter(true);

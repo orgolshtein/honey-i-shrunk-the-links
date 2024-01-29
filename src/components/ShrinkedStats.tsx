@@ -2,8 +2,9 @@ import { darken } from "polished";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { PersonalLinkData, StatsData } from "../types";
-import { asyncHandler } from "../hooks";
-import { analytics_router, fetchLastVisited, fetchTopShrinked, fetchTopVisited, server_link } from "../api";
+import asyncHandler from "../hooks/useAsyncHandler";
+import { fetchSelectedStats } from "../api";
+import { updateStats } from "../hooks/useUpdateStats";
 
 const ShrinkedStatsDiv = styled.div`
     color: #29318cb2;
@@ -75,11 +76,15 @@ const ShrinkedStatsDiv = styled.div`
 `
 
 interface ShrinkedStatsProps {
+    selected: PersonalLinkData
     stats_setter: {
         top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
         top_visited: Dispatch<SetStateAction<StatsData[]>>, 
-        last_visited: Dispatch<SetStateAction<StatsData[]>>
+        last_visited: Dispatch<SetStateAction<StatsData[]>>,
+        selected: Dispatch<SetStateAction<PersonalLinkData>>
     }
+    editor_setter: (editor_display: boolean) => void,
+    is_display_shrinked: (shrinked_display: boolean) => void
 };
 
 interface StatsOutputDivProps {
@@ -122,20 +127,18 @@ const StatsOutputDiv = styled.div<StatsOutputDivProps>`
         }
     }
 
-`
+    `
 
 const ShrinkedStats = ({
-    stats_setter
+    selected,
+    stats_setter,
+    editor_setter,
+    is_display_shrinked
 }: ShrinkedStatsProps): JSX.Element => {
-    const [selectedShrinked, setSelectedShrinked] = useState<PersonalLinkData>({
-        target: "",
-        link: "",
-        visits: 0,
-        last_visit: ""
-    });
     const [isShrinkedOutput, setIsShrinkedOutput] = useState<boolean>(false);
     const [shrinkedDataError, setShrinkedDataError] = useState<string>("");
     const [outputButton, setOutputButton] = useState<string>("Show");
+    const ShrinkedStatsInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(()=> {
         isShrinkedOutput?
@@ -145,43 +148,23 @@ const ShrinkedStats = ({
 
     const showLinkStats: () => void = asyncHandler(async (): Promise<void> => {
         setShrinkedDataError("");
-        const data: PersonalLinkData | string = await (await fetch(
-            `${server_link}${analytics_router}`, 
-            { 
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    shrinked: (ShrinkedStatsInputRef.current as HTMLInputElement).value.toString()
-                }) 
-            }
-            )).json();
-            if (typeof data !== "string"){
-                setSelectedShrinked({...data})
-                setIsShrinkedOutput(true);
-            } else {
-                setSelectedShrinked({
-                    target: "",
-                    link: "",
-                    visits: 0,
-                    last_visit: ""
-                });
-                setShrinkedDataError(data)
-            }
+        is_display_shrinked(false);
+        editor_setter(false);
+        const data: PersonalLinkData | string = await fetchSelectedStats(ShrinkedStatsInputRef);
+        if (typeof data !== "string"){
+            stats_setter.selected({...data})
+            setIsShrinkedOutput(true);
+        } else {
+            stats_setter.selected({
+                target: "",
+                link: "",
+                visits: 0,
+                last_visit: ""
+            });
+            setShrinkedDataError(data)
+        }
     });
-
-    const updateStats = asyncHandler(async () => {
-        const shrinks_array = await fetchTopShrinked();
-        stats_setter.top_shrinks(shrinks_array);
-        const visited_array = await fetchTopVisited();
-        stats_setter.top_visited(visited_array)
-        const last_visited = await fetchLastVisited();
-        stats_setter.last_visited(last_visited);
-        showLinkStats();
-    });
-
-   const ShrinkedStatsInputRef = useRef<HTMLInputElement>(null);
+    
     return (
         <ShrinkedStatsDiv>
             <p>Do you want information on <span>your</span> Shrinked Link?</p>
@@ -199,26 +182,28 @@ const ShrinkedStats = ({
             <StatsOutputDiv $is_output_displayed={isShrinkedOutput}>
                 <div className={isShrinkedOutput ? "output_open" : "output_closed"}>
                     <p>
-                        Your shrinked link, <span onClick={updateStats}>
-                        <a href={selectedShrinked.link} target="_blank">{selectedShrinked.link}</a>
+                        Your shrinked link, <span onClick={
+                    () => updateStats(stats_setter, ShrinkedStatsInputRef)
+                    }>
+                        <a href={selected.link} target="_blank">{selected.link}</a>
                         </span>,
                         </p>
                     <p>is directed to <span>{
-                    selectedShrinked.target.length > 45 ? 
-                    selectedShrinked.target.substring(0,43) + "..." : 
-                    selectedShrinked.target
+                    selected.target.length > 45 ? 
+                    selected.target.substring(0,43) + "..." : 
+                    selected.target
                     }</span></p>
                     {
-                    selectedShrinked.visits === 0 ?
+                    selected.visits === 0 ?
                     <p>and sadly had no visits yet</p> :
-                    selectedShrinked.visits === 1 ?
+                    selected.visits === 1 ?
                     <p>and was visited <span>once</span>, with the visit being on</p> :
-                    <p>and was visited <span>{selectedShrinked.visits}</span> times,
+                    <p>and was visited <span>{selected.visits}</span> times,
                     with the recent visit being on</p>
                     }
                     {
-                        selectedShrinked.visits > 0 ?
-                        <p><span>{selectedShrinked.last_visit}</span></p> : null
+                        selected.visits > 0 ?
+                        <p><span>{selected.last_visit}</span></p> : null
                     }
                 </div>
             </StatsOutputDiv>
