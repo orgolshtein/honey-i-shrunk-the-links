@@ -28,6 +28,23 @@ const Header = styled.h1`
 `
 
 const AppDiv = styled.div`
+  input{
+    font-size: 12px;
+    padding-left: 10px;
+    border-radius: 4px;
+    color: #0310a588;
+    font-family: "Griffy", cursive;
+
+    &:focus{
+      outline-width: 0;
+    }
+
+    &::placeholder {
+      color: #3949fb4d;
+      opacity: 1;
+    }
+  }
+
   .shrinked{
     width:80%;
     transition: width 1s;
@@ -43,21 +60,9 @@ const AppDiv = styled.div`
       input{
         height: 30px;
         width: 240px;
-        font-size: 12px;
-        padding-left: 10px;
-        border: #3949fb4d solid 1.5px;
-        border-radius: 4px;
-        color: #0310a588;
-        font-family: "Griffy", cursive;
-        transition: all 1s;
-        
-        &:focus{
-            outline-width: 0;
-        }
+        transition: height 1s,width 1s;
 
         &::placeholder {
-            color: #3949fb4d;
-            opacity: 1;
             transition: all 1s;
         }
       }
@@ -131,21 +136,9 @@ const AppDiv = styled.div`
       input{
         height: 60px;
         width: 500px;
-        font-size: 12px;
-        padding-left: 10px;
-        border: #3949fb4d solid 1.5px;
-        border-radius: 4px;
-        color: #0310a588;
-        font-family: "Griffy", cursive;
-        transition: all 1s;
+        transition: height 1s,width 1s;
         
-        &:focus{
-          outline-width: 0;
-        }
-
         &::placeholder {
-          color: #3949fb4d;
-          opacity: 1;
           font-size: 20px;
           transition: all 1s;
         }

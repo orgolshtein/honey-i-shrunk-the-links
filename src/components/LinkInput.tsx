@@ -4,17 +4,23 @@ import styled from "styled-components";
 import { LinkData } from "../types";
 import asyncHandler from "../hooks/useAsyncHandler";
 import { postNewShrinked, server_link } from "../api";
+import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface InputDivProps {
     $is_editor_displayed: boolean
+    $input_border: string
 }
 
 const LinkInputDiv = styled.div<InputDivProps>`
-    display: ${(props)=>props.$is_editor_displayed ? "none" : "block"};
+    display: ${(props): string => props.$is_editor_displayed ? "none" : "block"};
     position: relative;
     top: 2%;
     margin-left: 4%;
     margin-top: 4%;
+
+    input{
+        border: ${(props): string => props.$input_border} solid 1.5px;
+    }
 
     p{
         text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
@@ -43,6 +49,9 @@ const LinkInput = ({
 }: LinkInputProps): JSX.Element => {
     const [inputError, setInputError] = useState<string>("");
     const linkInputRef = useRef<HTMLInputElement>(null);
+    const [inputBorder, setInputBorder] = useState<string>("#3949fb4d");
+
+    useInputBorderToggle(inputError, setInputBorder, "#ff000080", "#3949fb4d");
     
     useEffect(()=>{
         window.addEventListener("keypress", function(event) {
@@ -78,7 +87,7 @@ const LinkInput = ({
     });
 
     return (
-        <LinkInputDiv $is_editor_displayed={editor_display}>
+        <LinkInputDiv $is_editor_displayed={editor_display} $input_border={inputBorder}>
             <form action="">
                 <input type="text" placeholder="Input Link to Shrink" ref={linkInputRef} onClick={() => setInputError("")}/>
                 <button type="button" onClick={shrinkLink}>Submit</button>

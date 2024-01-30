@@ -5,8 +5,13 @@ import { PersonalLinkData, StatsData } from "../types";
 import asyncHandler from "../hooks/useAsyncHandler";
 import { fetchSelectedStats } from "../api";
 import { updateStats } from "../hooks/useUpdateStats";
+import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
-const ShrinkedStatsDiv = styled.div`
+interface ShrinkedStatsDivProps {
+    $input_border: string
+}
+
+const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     color: #29318cb2;
     font-size: 1.1rem;
     font-family: "Griffy", cursive;
@@ -37,23 +42,8 @@ const ShrinkedStatsDiv = styled.div`
     input{
         height: 30px;
         width: 350px;
-        font-size: 12px;
-        padding-left: 10px;
-        border: #3949fb4d solid 1.5px;
-        border-radius: 4px;
-        color: #0310a588;
-        font-family: "Griffy", cursive;
+        border: ${(props): string => props.$input_border} solid 1.5px;
         margin-right: 4rem;
-
-        &:focus{
-            outline-width: 0;
-        }
-
-        &::placeholder {
-            color: #3949fb4d;
-            opacity: 1;
-            transition: all 1s;
-        }
     }
 
     button{
@@ -138,7 +128,10 @@ const ShrinkedStats = ({
     const [isShrinkedOutput, setIsShrinkedOutput] = useState<boolean>(false);
     const [shrinkedDataError, setShrinkedDataError] = useState<string>("");
     const [outputButton, setOutputButton] = useState<string>("Show");
+    const [inputBorder, setInputBorder] = useState<string>("#3949fb4d");
     const ShrinkedStatsInputRef = useRef<HTMLInputElement>(null);
+
+    useInputBorderToggle(shrinkedDataError, setInputBorder, "#ff000080", "#3949fb4d");
 
     useEffect(()=> {
         isShrinkedOutput?
@@ -166,7 +159,7 @@ const ShrinkedStats = ({
     });
     
     return (
-        <ShrinkedStatsDiv>
+        <ShrinkedStatsDiv $input_border={inputBorder}>
             <p>Do you want information on <span>your</span> Shrinked Link?</p>
             <p>No problem! Simply paste the link below and click "Show".</p>
             <input type="text" placeholder="Input Shrinked Link" ref={ShrinkedStatsInputRef} onClick={() => {

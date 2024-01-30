@@ -6,10 +6,12 @@ import { LinkData, PersonalLinkData, StatsData } from "../types";
 import asyncHandler from "../hooks/useAsyncHandler";
 import { patchShrinked } from "../api";
 import { updateStats } from "../hooks/useUpdateStats";
+import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface EditorDivProps {
-    $is_displayed: boolean,
+    $is_displayed: boolean
     $is_input: boolean
+    $input_border: string
 }
 
 const ShrinkedEditorDiv = styled.div<EditorDivProps>`
@@ -21,6 +23,10 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
 
     .editor_input{
         display: ${(props)=>props.$is_input ? "block" : "none"};
+
+        input {
+            border: ${(props): string => props.$input_border} solid 1.5px;
+        }
     }
 
     p{
@@ -77,6 +83,9 @@ const ShrinkedEditor = ({
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
     const [editorError, setEditorError] = useState<string>("");
     const editorInputRef = useRef<HTMLInputElement>(null);
+    const [inputBorder, setInputBorder] = useState<string>("#3949fb4d");
+
+    useInputBorderToggle(editorError, setInputBorder, "#ff000080", "#3949fb4d");
 
     const editShrinked: () => void = asyncHandler(async (): Promise<void> => {
         const edited_shrink: string = (editorInputRef.current as HTMLInputElement).value.toString();
@@ -103,7 +112,11 @@ const ShrinkedEditor = ({
     }
 
     return (
-        <ShrinkedEditorDiv $is_displayed={editor_display} $is_input={isEditorInput}>
+        <ShrinkedEditorDiv 
+            $is_displayed={editor_display} 
+            $is_input={isEditorInput}
+            $input_border={inputBorder}
+        >
             <div className="shrinked_output">
                 <span onClick={
                     () => updateStats(stats_setter)
