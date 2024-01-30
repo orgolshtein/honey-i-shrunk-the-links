@@ -29,7 +29,7 @@ const Header = styled.h1`
 
 const AppDiv = styled.div`
   input{
-    font-size: 12px;
+    font-size: 0.8rem;
     padding-left: 10px;
     border-radius: 4px;
     color: #0310a588;
@@ -231,7 +231,7 @@ const App: FC = (): JSX.Element => {
   const [isServerError, setIsServerError] = useState<boolean>(false);
   const [isServerLoading, setIsServerLoading] = useState<boolean>(true);
   const [isEditorDisplayed, setIsEditorDisplayed] = useState<boolean>(false);
-  const [isDisplayShrinked, setIsDisplayShrinked] = useState<boolean>(false);
+  const [isDisplayShrinked, setIsDisplayShrinked] = useState<boolean>(true);
   const [topShrinked, setTopShrinked] = useState<StatsData[]>([]);
   const [topVisited, setTopVisited] = useState<StatsData[]>([]);
   const [lastVisited, setLastVisited] = useState<StatsData[]>([]);
@@ -251,6 +251,7 @@ const App: FC = (): JSX.Element => {
         setTopVisited(visited_array)
         const last_visited: StatsData[] = await fetchLastVisited();
         setLastVisited(last_visited)
+        setTimeout((): void => setIsDisplayShrinked(false), 100)
       } catch {
         setIsServerError(true);
       } finally {
@@ -310,16 +311,22 @@ const App: FC = (): JSX.Element => {
               header="Top Shrinked Sites:"
               stat="Shrinks"
               stats_data={topShrinked}
+              display_shrinked={isDisplayShrinked}
+              editor_display={isEditorDisplayed}
             />
             <TopSites
               header="Top Visited Sites:"
               stat="Visits"
               stats_data={topVisited}
+              display_shrinked={isDisplayShrinked}
+              editor_display={isEditorDisplayed}
             />
             <TopSites
               header="Recently Visited:"
               stat="Last Visit"
               stats_data={lastVisited}
+              display_shrinked={isDisplayShrinked}
+              editor_display={isEditorDisplayed}
             />
           </Carousel>
           <ShrinkedStats 
@@ -332,7 +339,9 @@ const App: FC = (): JSX.Element => {
             }}
             editor_setter={setIsEditorDisplayed}
             is_display_shrinked={setIsDisplayShrinked}
-            />
+            display_shrinked={isDisplayShrinked}
+            editor_display={isEditorDisplayed}
+          />
       </AppDiv>
       }
       <FooterDiv>

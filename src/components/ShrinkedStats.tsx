@@ -9,19 +9,29 @@ import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface ShrinkedStatsDivProps {
     $input_border: string
+    $display_shrinked: boolean 
+    $editor_display: boolean
 }
 
 const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     color: #29318cb2;
-    font-size: 1.1rem;
+    width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "5rem" : "46rem"};
+    font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.1rem"};
     font-family: "Griffy", cursive;
     margin: 1rem;
-    margin-left: 10%;
+    padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "10%"};
     margin-top: 3rem;
+    transition: all 0.2s;
 
     p{
         margin-top: 1rem;
         margin-bottom: 1rem;
+    }
+    
+    .shrinked_stats_msg{
+        padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
+        text-align: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"};
+        transition: all 2s;
     }
 
     .data_error{
@@ -39,30 +49,38 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         font-weight: bold;
     }
 
-    input{
-        height: 30px;
-        width: 350px;
-        border: ${(props): string => props.$input_border} solid 1.5px;
-        margin-right: 4rem;
-    }
+    form{
+        display: flex;
+        flex-direction: row;
+        gap: 4rem;
 
-    button{
-        width: 85px;
-        height: 25px;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
-        border-radius: 3px;
-        color: #548498;
-        font-size: 12px;
-        cursor: pointer;
-        transition: width 1s, height 1s, display 1s, font-size 1s;
-        font-family: "Griffy", cursive;
-        
-        &:hover{
-          color: ${darken(0.5, "#548498")};
-          background: ${darken(0.5, "#3949fb4d")};
+        input{
+            width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "26rem"};
+            height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "2.2rem"};
+            margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
+            border: ${(props): string => props.$input_border} solid 1.5px;
+            transition: width 2s, margin-left 2s, height 2s;
         }
-      }
+    
+        button{
+            width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "6rem"};
+            height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "2rem"};
+            background: #3949fb4d;
+            border: #548498 solid 1px;
+            border-radius: 3px;
+            color: #548498;
+            font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "0.8rem"};
+            cursor: pointer;
+            transition: all 2s;
+            font-family: "Griffy", cursive;
+            
+            &:hover{
+              color: ${darken(0.5, "#548498")};
+              background: ${darken(0.5, "#3949fb4d")};
+            }
+        }
+    }
+    
 `
 
 interface ShrinkedStatsProps {
@@ -74,7 +92,9 @@ interface ShrinkedStatsProps {
         selected: Dispatch<SetStateAction<PersonalLinkData>>
     }
     editor_setter: (editor_display: boolean) => void,
-    is_display_shrinked: (shrinked_display: boolean) => void
+    is_display_shrinked: (display_shrinked: boolean) => void
+    display_shrinked: boolean
+    editor_display: boolean
 };
 
 interface StatsOutputDivProps {
@@ -123,7 +143,9 @@ const ShrinkedStats = ({
     selected,
     stats_setter,
     editor_setter,
-    is_display_shrinked
+    is_display_shrinked,
+    display_shrinked,
+    editor_display
 }: ShrinkedStatsProps): JSX.Element => {
     const [isShrinkedOutput, setIsShrinkedOutput] = useState<boolean>(false);
     const [shrinkedDataError, setShrinkedDataError] = useState<string>("");
@@ -159,18 +181,26 @@ const ShrinkedStats = ({
     });
     
     return (
-        <ShrinkedStatsDiv $input_border={inputBorder}>
-            <p>Do you want information on <span>your</span> Shrinked Link?</p>
-            <p>No problem! Simply paste the link below and click "Show".</p>
-            <input type="text" placeholder="Input Shrinked Link" ref={ShrinkedStatsInputRef} onClick={() => {
-                setShrinkedDataError("");
-                setIsShrinkedOutput(false);
-                }}/>
-            <button type="button" onClick={
-                isShrinkedOutput ? 
-                ()=>setIsShrinkedOutput(false) : 
-                showLinkStats
-                }>{outputButton}</button>
+        <ShrinkedStatsDiv 
+            $input_border={inputBorder} 
+            $display_shrinked={display_shrinked} 
+            $editor_display={editor_display}
+        >
+            <div className="shrinked_stats_msg">
+                <p>Do you want information on <span>your</span> Shrinked Link?</p>
+                <p>No problem! Simply paste the link below and click "Show".</p>
+            </div>
+            <form>
+                <input type="text" placeholder="Input Shrinked Link" ref={ShrinkedStatsInputRef} onClick={() => {
+                    setShrinkedDataError("");
+                    setIsShrinkedOutput(false);
+                    }}/>
+                <button type="button" onClick={
+                    isShrinkedOutput ? 
+                    ()=>setIsShrinkedOutput(false) : 
+                    showLinkStats
+                    }>{outputButton}</button>
+            </form>
             <p className="data_error">{shrinkedDataError}</p>
             <StatsOutputDiv $is_output_displayed={isShrinkedOutput}>
                 <div className={isShrinkedOutput ? "output_open" : "output_closed"}>
