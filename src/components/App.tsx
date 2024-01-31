@@ -27,7 +27,15 @@ const Header = styled.h1`
   text-transform: uppercase;
 `
 
-const AppDiv = styled.div`
+interface AppDivProps {
+  $display_shrinked: boolean
+  $editor_display: boolean
+}
+
+const AppDiv = styled.div<AppDivProps>`
+  opacity: ${(props):string => (props.$display_shrinked && props.$editor_display === false)? "0": "1"};
+  transition: opacity 1.5s;
+
   input{
     font-size: 0.8rem;
     padding-left: 10px;
@@ -269,7 +277,10 @@ const App: FC = (): JSX.Element => {
         : isServerError ? 
         <ServerError />
         :
-        <AppDiv>
+        <AppDiv 
+          $display_shrinked={isDisplayShrinked}
+          $editor_display={isEditorDisplayed}
+        >
           <div className={isDisplayShrinked ? "shrinked" : "full"}>
             <LinkInput 
               shrink_setter={setNewShrinked} 
