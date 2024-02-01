@@ -21,6 +21,17 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "8%"};
     transition: all 0.2s;
 
+    @media only screen and (max-width: 700px){
+        width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "60%"};
+        padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "6%"};
+    }
+
+    @media only screen and (max-width: 600px){
+        width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "50%"};
+        font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.5rem"};
+        padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
+    }
+
     p{
         margin-top: 1rem;
         margin-bottom: 1rem;
@@ -30,6 +41,10 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
         text-align: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"};
         transition: all 2s;
+
+        @media only screen and (max-width: 700px){
+            text-align: center;
+        }
     }
 
     .data_error{
@@ -39,6 +54,11 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         color: #ff000080;
         display: block;
         margin-top: 0.5rem;
+
+        @media only screen and (max-width: 700px){
+            left: 0;
+            text-align: center;
+        }
     }
 
     a{
@@ -54,12 +74,25 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         flex-direction: row;
         gap: 4rem;
 
+        @media only screen and (max-width: 700px){
+            flex-direction: column;
+            gap: 1rem;
+        }
+
         input{
             width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "26rem"};
             height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "2.2rem"};
             margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
             border: ${(props): string => props.$input_border} solid 1.5px;
             transition: width 2s, margin-left 2s, height 2s;
+
+            @media only screen and (max-width: 700px){
+                height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"};
+            }
+
+            @media only screen and (max-width: 600px){
+                width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "24rem"};
+            }
         }
     
         button{
@@ -73,6 +106,12 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
             cursor: pointer;
             transition: all 2s;
             font-family: "Griffy", cursive;
+
+            @media only screen and (max-width: 700px){
+                width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0" : "100%"};
+                height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"};
+                font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.5rem"};
+            }
             
             &:hover{
               color: ${darken(0.5, "#548498")};
@@ -102,6 +141,9 @@ interface StatsOutputDivProps {
 }
 
 const StatsOutputDiv = styled.div<StatsOutputDivProps>`
+    @media only screen and (max-width: 700px){
+        text-align: center;
+    }
     .output_open {
         p {
             display: block;

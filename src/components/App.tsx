@@ -24,6 +24,7 @@ const Header = styled.h1`
   margin-top: 3rem;
   font-family: "Griffy", cursive;
   text-transform: uppercase;
+  text-align: center;
 `
 
 interface AppDivProps {
@@ -46,6 +47,10 @@ const AppDiv = styled.div<AppDivProps>`
     color: #0310a588;
     font-family: "Griffy", cursive;
 
+    @media only screen and (max-width: 880px){
+      font-size: 1.2rem;
+    }
+
     &:focus{
       outline-width: 0;
     }
@@ -67,11 +72,22 @@ const AppDiv = styled.div<AppDivProps>`
       align-items: center;
       padding-left: 15rem;
       transition: padding-left 1s;
+      
+      @media only screen and (max-width: 880px){
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
         
       input{
         height: 2.2rem;
         width: 18rem;
         transition: height 1s,width 1s;
+
+        @media only screen and (max-width: 880px){
+          height: 3rem;
+          width: 20rem;
+        }
 
         &::placeholder {
             transition: all 1s;
@@ -89,6 +105,12 @@ const AppDiv = styled.div<AppDivProps>`
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
+
+        @media only screen and (max-width: 880px){
+          height: 3rem;
+          width: 20rem;
+          font-size: 1.2rem;
+        }
         
         &:hover{
           color: ${darken(0.5, "#548498")};
@@ -103,6 +125,12 @@ const AppDiv = styled.div<AppDivProps>`
       gap: 2.4rem;
       transition: all 1s;
 
+      @media only screen and (max-width: 880px){
+        flex-direction: column;
+        justify-content:center;
+        gap: 1rem;
+      }
+
       button{
         width: 6.5rem;
         height: 1.8rem;
@@ -114,6 +142,12 @@ const AppDiv = styled.div<AppDivProps>`
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
+
+        @media only screen and (max-width: 880px){
+          width: 70%;
+          height: 3rem;
+          font-size: 1.2rem;
+        }
         
         &:hover{
           color: ${darken(0.5, "#548498")};
@@ -130,6 +164,10 @@ const AppDiv = styled.div<AppDivProps>`
       text-decoration: underline;
       width: 17rem;
       transition: all 1s;
+
+      @media only screen and (max-width: 880px){
+          text-align: center;
+        }
     }
   }
 
@@ -145,10 +183,19 @@ const AppDiv = styled.div<AppDivProps>`
       padding-left: 0;
       transition: padding-left 1s;
       
+      @media only screen and (max-width: 880px){
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
       input{
         height: 4.4rem;
         width: 37rem;
         transition: height 1s,width 1s;
+
+        @media only screen and (max-width: 880px){
+          width: 50%;
+        }
         
         &::placeholder {
           font-size: 1.5rem;
@@ -167,6 +214,10 @@ const AppDiv = styled.div<AppDivProps>`
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
+
+        @media only screen and (max-width: 880px){
+          width: 50%;
+        }
         
         &:hover{
           color: ${darken(0.5, "#548498")};
@@ -181,6 +232,14 @@ const AppDiv = styled.div<AppDivProps>`
       padding-left: 10%;
       gap: 2.4rem;
       transition: all 1s;
+
+      @media only screen and (max-width: 880px){
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+        width: 50%;
+        margin-left: 15%;
+      }
 
       button{
         width: 8rem;
@@ -225,6 +284,10 @@ const FooterDiv = styled.div`
   width: 100%;
   z-index: 1;
   text-align: center;
+  
+  @media only screen and (max-width: 700px){
+    font-size: 1.2rem;
+  }
 
   p{
     margin-top: .5rem;

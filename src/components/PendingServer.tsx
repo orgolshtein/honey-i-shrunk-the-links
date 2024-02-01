@@ -14,6 +14,10 @@ const PendingServerDiv = styled.div`
         display: block;
         font-weight: bold;
         font-family: "Griffy", cursive;
+
+        @media only screen and (max-width: 700px){
+            text-align: center;
+        }
     }
 `
 
@@ -41,7 +45,7 @@ const PendingServer: FC = (): JSX.Element => {
                     "It is a ReactJS Front-End project",
                     "You can go see it through my portfolio",
                     "There is also a nice ID Validator project",
-                    "It done in multiple languages",
+                    "In multiple languages",
                     "Also, in my GitHub",
                     "You can see the code for this sleeping server",
                     "But whatever you choose, please open in another tab",

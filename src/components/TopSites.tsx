@@ -21,6 +21,15 @@ const StatsGrid = styled.div<StatsProps>`
     text-align: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"};
     transition: all 1.5s;
 
+    @media only screen and (max-width: 700px){
+        width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "70%"};
+        margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "20%"};
+    }
+
+    @media only screen and (max-width: 600px){
+        display: none;
+    }
+
     .stat{
         text-align: center;
     }

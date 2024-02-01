@@ -7,28 +7,34 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
     justify-content: space-around;
     gap: 4rem;
+
+    @media only screen and (max-width: 880px){
+        width: 100%;
+    }
   }
 
   html {
-    height: 900px;
     font: 13.5px 'Helvetica Neue',Arial;
+    height: 160%;
     background: #89CFF0;
     background: -moz-linear-gradient(
       top,
-      #f5f5dc 0%,
+      #89CFF0 0%,
+      #f5f5dc 10%,
       #89CFF0 100%
     );
     background: -webkit-linear-gradient(
       top,
-      #f5f5dc 0%,
+      #89CFF0 0%,
+      #f5f5dc 10%,
       #89CFF0 100%
     );
     background: linear-gradient(
       to bottom,
-      #f5f5dc 0%,
+      #89CFF0 0%,
+      #f5f5dc 10%,
       #89CFF0 100%
     );
     font-family: Arial,sans-serif;
@@ -36,6 +42,10 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    @media only screen and (max-width: 880px){
+      font: 16px 'Helvetica Neue',Arial;
     }
   }
 `

@@ -30,6 +30,11 @@ const LinkInputDiv = styled.div<InputDivProps>`
         margin-top: 0.5rem;
         font-family: "Griffy", cursive;
         padding-bottom: 3rem;
+
+        @media only screen and (max-width: 880px){
+            left: 0;
+            text-align: center;
+        }
     }
 `
 

@@ -77,6 +77,12 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
         margin-left: 25%;
         cursor: pointer;
         font-family: "Griffy", cursive;
+
+        @media only screen and (max-width: 880px){
+          height: 3rem;
+          width: 20rem;
+          font-size: 1.2rem;
+        }
         
         &:hover{
             color: ${darken(0.5, "#548498")};
