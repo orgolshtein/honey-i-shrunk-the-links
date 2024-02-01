@@ -15,14 +15,42 @@ interface EditorDivProps {
 }
 
 const ShrinkedEditorDiv = styled.div<EditorDivProps>`
-    display: ${(props)=>props.$is_displayed ? "block" : "none"};
-    position: relative;
-    top: 2%;
-    margin-left: 30%;
-    margin-top: 4%;
+    display: ${(props)=>props.$is_displayed ? "flex" : "none"};
+    flex-direction: column;
+    gap: 1rem;
 
     .editor_input{
-        display: ${(props)=>props.$is_input ? "block" : "none"};
+        display: block;
+        padding-left: 25%;
+        opacity: 0.9;
+        animation: slide-down 1000ms;
+        @keyframes slide-down {
+            from {
+                transform: translateY(-10%); opacity: 0;
+            }
+            to {
+                transform: translateY(0%); opacity: 1;
+            }
+        }
+
+        input {
+            border: ${(props): string => props.$input_border} solid 1.5px;
+        }
+    }
+
+    .editor_input_hidden{
+        display: none;
+        padding-left: 25%;
+        opacity: 0.9;
+        animation: slide-up 200ms;
+        @keyframes slide-up {
+            from { 
+                display: block; 
+            }
+            to { 
+                transform: translateY(-10%); opacity: 0;
+            }
+        }
 
         input {
             border: ${(props): string => props.$input_border} solid 1.5px;
@@ -34,21 +62,20 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
         color: #ff000080;
         font-size: 1rem;
         display: block;
-        margin-top: 10px;
+        margin-top: 0.5rem;
         font-family: "Griffy", cursive;
     }
 
     .shrink_again{
-        width: 180px;
-        height: 40px;
+        width: 13rem;
+        height: 3rem;
         background: #3949fb4d;
         border: #548498 solid 1px;
-        border-radius: 3px;
+        border-radius: 0.2rem;
         color: #548498;
-        font-size: 15px;
+        font-size: 1.1rem;
+        margin-left: 25%;
         cursor: pointer;
-        margin-top: 15px;
-        margin-left: 10px;
         font-family: "Griffy", cursive;
         
         &:hover{
@@ -102,13 +129,15 @@ const ShrinkedEditor = ({
     const shrinkAnother: () => void = () => {
         editor_setter(false);
         setIsEditorInput(false);
+        setEditorError("");
         setTimeout(()=>{
             is_display_shrinked(false)
-        },100)
+        },0)
     };
 
     const toggleInput: () => void = () => {
         isEditorInput ? setIsEditorInput(false) : setIsEditorInput(true);
+        setEditorError("");
     }
 
     return (
@@ -125,7 +154,7 @@ const ShrinkedEditor = ({
                 </span>
                 <button type="button" onClick={toggleInput}>Edit Shrinked?</button>
             </div>
-            <div className="editor_input">
+            <div className={isEditorInput? "editor_input" : "editor_input_hidden"}>
                 <form action="">
                     <input 
                         type="text" 

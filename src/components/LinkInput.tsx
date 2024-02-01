@@ -15,20 +15,19 @@ const LinkInputDiv = styled.div<InputDivProps>`
     display: ${(props): string => props.$is_editor_displayed ? "none" : "block"};
     position: relative;
     top: 2%;
-    margin-left: 4%;
-    margin-top: 4%;
 
     input{
         border: ${(props): string => props.$input_border} solid 1.5px;
     }
 
     p{
+        position: relative;
+        left: 30%;
         text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
         color: #ff000080;
         font-size: 1.5rem;
         display: block;
-        text-align: center;
-        margin-top: 10px;
+        margin-top: 0.5rem;
         font-family: "Griffy", cursive;
         padding-bottom: 3rem;
     }

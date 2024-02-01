@@ -5,15 +5,14 @@ import Textra from 'react-textra';
 const ServerErrorDiv = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    align-items: center;
+    height: 15rem;
 
     div{
         text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
         color: #ff000071;
         font-size: 2rem;
         display: block;
-        margin-top: 50px;
-        margin-bottom: 80px;
         font-weight: bold;
         font-family: "Griffy", cursive;
         text-align: center;

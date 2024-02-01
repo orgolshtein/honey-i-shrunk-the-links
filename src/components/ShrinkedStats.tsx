@@ -18,9 +18,7 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "5rem" : "46rem"};
     font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.1rem"};
     font-family: "Griffy", cursive;
-    margin: 1rem;
-    padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "10%"};
-    margin-top: 3rem;
+    padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "8%"};
     transition: all 0.2s;
 
     p{
@@ -35,10 +33,12 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     }
 
     .data_error{
+        position: relative;
+        left: 20%;
         text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
         color: #ff000080;
         display: block;
-        margin-top: 10px;
+        margin-top: 0.5rem;
     }
 
     a{
@@ -67,7 +67,7 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
             height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "2rem"};
             background: #3949fb4d;
             border: #548498 solid 1px;
-            border-radius: 3px;
+            border-radius: 0.2rem;
             color: #548498;
             font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "0.8rem"};
             cursor: pointer;
@@ -102,9 +102,6 @@ interface StatsOutputDivProps {
 }
 
 const StatsOutputDiv = styled.div<StatsOutputDivProps>`
-    padding-left: 1rem;
-    margin-top: 2rem;
-
     .output_open {
         p {
             display: block;

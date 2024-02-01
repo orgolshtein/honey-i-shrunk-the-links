@@ -5,14 +5,13 @@ import Textra from 'react-textra';
 const PendingServerDiv = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    align-items: center;
+    height: 15rem;
 
     div{
         color: #29318c56;
         font-size: 2rem;
         display: block;
-        margin-top: 50px;
-        margin-bottom: 80px;
         font-weight: bold;
         font-family: "Griffy", cursive;
     }

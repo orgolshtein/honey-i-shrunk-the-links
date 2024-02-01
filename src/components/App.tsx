@@ -14,15 +14,14 @@ import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
 import ServerError from "./ServerError";
 
 const Header = styled.h1`
+  position: relative;
   text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
   color: #7a85ff4d;
   font-size: 3rem;
-  padding-left: 1rem;
   -webkit-text-fill-color: transparent;
   display: block;
-  margin-top: 50px;
-  margin-bottom: 80px;
   font-weight: bold;
+  margin-top: 3rem;
   font-family: "Griffy", cursive;
   text-transform: uppercase;
 `
@@ -33,13 +32,17 @@ interface AppDivProps {
 }
 
 const AppDiv = styled.div<AppDivProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
   opacity: ${(props):string => (props.$display_shrinked && props.$editor_display === false)? "0": "1"};
   transition: opacity 1.5s;
 
   input{
     font-size: 0.8rem;
-    padding-left: 10px;
-    border-radius: 4px;
+    padding-left: 0.7rem;
+    border-radius: 0.3rem;
     color: #0310a588;
     font-family: "Griffy", cursive;
 
@@ -60,14 +63,14 @@ const AppDiv = styled.div<AppDivProps>`
     form{
       display: flex;
       flex-direction: row;
-      gap: 20px;
+      gap: 1.5rem;
       align-items: center;
-      padding-left: 200px;
+      padding-left: 15rem;
       transition: padding-left 1s;
         
       input{
-        height: 30px;
-        width: 240px;
+        height: 2.2rem;
+        width: 18rem;
         transition: height 1s,width 1s;
 
         &::placeholder {
@@ -76,13 +79,13 @@ const AppDiv = styled.div<AppDivProps>`
       }
 
       button{
-        width: 85px;
-        height: 25px;
+        width: 6rem;
+        height: 1.8rem;
         background: #3949fb4d;
         border: #548498 solid 1px;
-        border-radius: 3px;
+        border-radius: 0.2rem;
         color: #548498;
-        font-size: 12px;
+        font-size: 0.8rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
@@ -96,17 +99,18 @@ const AppDiv = styled.div<AppDivProps>`
     .shrinked_output{
       display: flex;
       flex-direction: row;
-      gap: 33px;
+      padding-left: 25%;
+      gap: 2.4rem;
       transition: all 1s;
 
       button{
-        width: 90px;
-        height: 25px;
+        width: 6.5rem;
+        height: 1.8rem;
         background: #3949fb4d;
         border: #548498 solid 1px;
-        border-radius: 3px;
+        border-radius: 0.2rem;
         color: #548498;
-        font-size: 12px;
+        font-size: 0.8rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
@@ -124,7 +128,7 @@ const AppDiv = styled.div<AppDivProps>`
       display: block;
       font-family: "Griffy", cursive;
       text-decoration: underline;
-      width: 225px;
+      width: 17rem;
       transition: all 1s;
     }
   }
@@ -136,30 +140,30 @@ const AppDiv = styled.div<AppDivProps>`
     form{
       display: flex;
       flex-direction: row;
-      gap: 20px;
+      justify-content: space-between;
       align-items: center;
       padding-left: 0;
       transition: padding-left 1s;
       
       input{
-        height: 60px;
-        width: 500px;
+        height: 4.4rem;
+        width: 37rem;
         transition: height 1s,width 1s;
         
         &::placeholder {
-          font-size: 20px;
+          font-size: 1.5rem;
           transition: all 1s;
         }
       }
 
       button{
-        width: 110px;
-        height: 55px;
+        width: 8rem;
+        height: 4rem;
         background: #3949fb4d;
         border: #548498 solid 1px;
-        border-radius: 3px;
+        border-radius: 0.2rem;
         color: #548498;
-        font-size: 20px;
+        font-size: 1.5rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
@@ -174,17 +178,18 @@ const AppDiv = styled.div<AppDivProps>`
     .shrinked_output{
       display: flex;
       flex-direction: row;
-      gap: 33px;
+      padding-left: 10%;
+      gap: 2.4rem;
       transition: all 1s;
 
       button{
-        width: 110px;
-        height: 55px;
+        width: 8rem;
+        height: 4rem;
         background: #3949fb4d;
         border: #548498 solid 1px;
-        border-radius: 3px;
+        border-radius: 0.2rem;
         color: #548498;
-        font-size: 12px;
+        font-size: 0.8rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
@@ -202,7 +207,7 @@ const AppDiv = styled.div<AppDivProps>`
       display: block;
       font-family: "Griffy", cursive;
       text-decoration: underline;
-      width: 400px;
+      width: 35rem;
       transition: all 1s;
     }
   }
@@ -218,10 +223,8 @@ const FooterDiv = styled.div`
   position: relative;
   bottom: 0;
   width: 100%;
-  padding-top: 2rem;
   z-index: 1;
   text-align: center;
-  margin-bottom:0;
 
   p{
     margin-top: .5rem;

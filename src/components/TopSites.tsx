@@ -14,7 +14,6 @@ const StatsGrid = styled.div<StatsProps>`
     grid-template-columns: auto;
     row-gap: .5rem;
     grid-template-rows:auto;
-    margin: 1rem;
     margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "10%"};
     color: #29318cb2;
     font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.1rem"};
@@ -36,8 +35,6 @@ const StatsHeader = styled.h2<StatsProps>`
     grid-column-start: 1;
     grid-column-end: 3;
     font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "2rem"};
-    margin-top: 3rem;
-    margin-bottom: 2rem;
     font-weight: bold;
     font-family: "Griffy", cursive;
     text-align: center;
