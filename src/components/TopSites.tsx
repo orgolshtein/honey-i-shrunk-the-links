@@ -19,23 +19,37 @@ interface TopSitesProps {
 
 const StatsGrid = styled.div<StatsProps>`
     display: grid;
-    width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "42rem"};
     grid-template-columns: auto;
     row-gap: .5rem;
     grid-template-rows:auto;
-    margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "10%"};
-    color: ${Color.mainText};
-    font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.1rem"};
-    font-family: "Griffy", cursive;
-    text-align: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"};
+    width: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "42rem"
+    };
+    margin-left: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "10%"
+    };
+    font-size: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.1rem"
+    };
+    text-align: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"
+    };
     transition: all 1.5s;
 
     @media only screen and (max-width: 700px){
-        width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "70%"};
-        margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "20%"};
+        width: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "70%"
+        };
+        margin-left: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "20%"
+        };
     }
 
-    @media only screen and (max-width: 600px){
+    @media only screen and (max-width: 650px){
+        opacity: 0;
+    }
+
+    @media only screen and (max-width: 550px){
         display: none;
     }
 
@@ -52,9 +66,10 @@ const StatsHeader = styled.h2<StatsProps>`
     color: ${Color.subHeader};
     grid-column-start: 1;
     grid-column-end: 3;
-    font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "2rem"};
+    font-size: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "2rem"
+    };
     font-weight: bold;
-    font-family: "Griffy", cursive;
     text-align: center;
     transition: all 1.5s;
 `

@@ -1,4 +1,3 @@
-import { darken } from "polished";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -34,22 +33,36 @@ interface StatsOutputDivProps {
 }
 
 const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
-    color: ${Color.mainText};
-    width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "5rem" : "46rem"};
-    font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.1rem"};
-    font-family: "Griffy", cursive;
-    padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "8%"};
+    width: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "5rem" : "46rem"
+    };
+    font-size: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.1rem"
+    };
+    padding-left: ${
+        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "8%"
+    };
     transition: all 0.2s;
 
     @media only screen and (max-width: 700px){
-        width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "60%"};
-        padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "6%"};
+        width: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "60%"
+        };
+        padding-left: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "6%"
+        };
     }
 
     @media only screen and (max-width: 600px){
-        width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "50%"};
-        font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.5rem"};
-        padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
+        width: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "50%"
+        };
+        font-size: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.5rem"
+        };
+        padding-left: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"
+        };
     }
 
     p{
@@ -58,8 +71,12 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     }
     
     .shrinked_stats_msg{
-        padding-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
-        text-align: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"};
+        padding-left: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"
+        };
+        text-align: ${
+            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"
+        };
         transition: all 2s;
 
         @media only screen and (max-width: 700px){
@@ -67,22 +84,15 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         }
     }
 
-    .data_error{
+    .error_msg{
         position: relative;
         left: 20%;
-        text-shadow: 2px 2px 0px ${Color.textShadow};
-        color: ${Color.error};
-        display: block;
         margin-top: 0.5rem;
 
         @media only screen and (max-width: 700px){
             left: 0;
             text-align: center;
         }
-    }
-
-    a{
-        color: ${Color.mainText};
     }
 
     span{
@@ -100,42 +110,64 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         }
 
         input{
-            width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "26rem"};
-            height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "2.2rem"};
-            margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"};
+            width: ${
+                (props): string =>
+                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "26rem"
+            };
+            height: ${
+                (props): string =>
+                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "2.2rem"
+            };
+            margin-left: ${
+                (props): string =>
+                (props.$display_shrinked && props.$editor_display === false)? "40%" : "0"
+            };
             border: ${(props): string => props.$input_border} solid 1.5px;
             transition: width 2s, margin-left 2s, height 2s;
 
             @media only screen and (max-width: 700px){
-                height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"};
+                height: ${
+                    (props): string =>
+                    (props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"
+                };
             }
 
             @media only screen and (max-width: 600px){
-                width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "24rem"};
+                width: ${
+                    (props): string =>
+                    (props.$display_shrinked && props.$editor_display === false)? "0rem" : "24rem"
+                };
             }
         }
     
         button{
-            width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "6rem"};
-            height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "2rem"};
-            background: ${Color.button};
-            border: ${Color.buttonText} solid 1px;
-            border-radius: 0.2rem;
-            color: ${Color.buttonText};
-            font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "0.8rem"};
-            cursor: pointer;
-            transition: all 2s;
-            font-family: "Griffy", cursive;
+            width: ${
+                (props): string =>
+                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "6rem"
+            };
+            height: ${
+                (props): string =>
+                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "2rem"
+            };
+            font-size: ${
+                (props): string =>
+                (props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "0.8rem"
+            };
+            transition: width 2s, height 2s, display 2s, font-size 2s;
 
             @media only screen and (max-width: 700px){
-                width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0" : "100%"};
-                height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"};
-                font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.5rem"};
-            }
-            
-            &:hover{
-              color: ${darken(0.5, Color.buttonText)};
-              background: ${darken(0.5, Color.button)};
+                width: ${(
+                    props): string =>
+                    (props.$display_shrinked && props.$editor_display === false)? "0" : "100%"
+                };
+                height: ${
+                    (props): string =>
+                    (props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"
+                };
+                font-size: ${
+                    (props): string =>
+                    (props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.5rem"
+                };
             }
         }
     }
@@ -232,17 +264,22 @@ const ShrinkedStats = ({
                 <p>No problem! Simply paste the link below and click "Show".</p>
             </div>
             <form>
-                <input type="text" placeholder="Input Shrinked Link" ref={ShrinkedStatsInputRef} onClick={() => {
-                    setShrinkedDataError("");
-                    setIsShrinkedOutput(false);
-                    }}/>
+                <input 
+                    type="text" 
+                    placeholder="Input Shrinked Link" 
+                    ref={ShrinkedStatsInputRef} 
+                    onClick={() => {
+                        setShrinkedDataError("");
+                        setIsShrinkedOutput(false);
+                        }}
+                />
                 <button type="button" onClick={
                     isShrinkedOutput ? 
                     ()=>setIsShrinkedOutput(false) : 
                     showLinkStats
                     }>{outputButton}</button>
             </form>
-            <p className="data_error">{shrinkedDataError}</p>
+            <p className="error_msg">{shrinkedDataError}</p>
             <StatsOutputDiv $is_output_displayed={isShrinkedOutput}>
                 <div className={isShrinkedOutput ? "output_open" : "output_closed"}>
                     <p>

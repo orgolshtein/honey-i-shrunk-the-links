@@ -2,21 +2,15 @@ import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import Textra from "react-textra";
 
-import * as Color from "../colors";
-
 const ServerErrorDiv = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
     height: 15rem;
 
-    div{
-        text-shadow: 2px 2px 0px ${Color.textShadow};
-        color: ${Color.error};
+    .error_msg{
         font-size: 2rem;
-        display: block;
         font-weight: bold;
-        font-family: "Griffy", cursive;
         text-align: center;
     }
 `
@@ -32,7 +26,7 @@ const ServerError: FC = (): JSX.Element => {
         <ServerErrorDiv>
             {
                 isAnimated ?
-                <div>
+                <div className="error_msg">
                     <Textra duration={100} stopDuration={300} effect='scale' data={[
                         "S",
                         "Se",
@@ -59,7 +53,7 @@ const ServerError: FC = (): JSX.Element => {
                     />
                 </div>
                 :
-                <div>Server is down... Sorry</div>
+                <div className="error_msg">Server is down... Sorry</div>
             }
         </ServerErrorDiv>
     )

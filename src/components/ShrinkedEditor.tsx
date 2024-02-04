@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { darken } from "polished";
 import styled from "styled-components";
 
 import { LinkData, PersonalLinkData, StatsData } from "../types";
@@ -72,36 +71,22 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
         }
     }
 
-    p{
-        text-shadow: 2px 2px 0px ${Color.textShadow};
-        color: ${Color.error};;
+    .error_msg{
         font-size: 1rem;
-        display: block;
         margin-top: 0.5rem;
-        font-family: "Griffy", cursive;
     }
 
     .shrink_again{
         width: 13rem;
         height: 3rem;
-        background: ${Color.button};
-        border: ${Color.buttonText} solid 1px;
-        border-radius: 0.2rem;
-        color: ${Color.buttonText};
         font-size: 1.1rem;
         margin-left: 25%;
-        cursor: pointer;
-        font-family: "Griffy", cursive;
+        transition: width 1s, height 1s, font-size 1s;
 
         @media only screen and (max-width: 880px){
           height: 3rem;
           width: 20rem;
           font-size: 1.2rem;
-        }
-        
-        &:hover{
-            color: ${darken(0.5, Color.buttonText)};
-            background: ${darken(0.5, Color.button)};
         }
     }
 `
@@ -171,7 +156,7 @@ const ShrinkedEditor = ({
                     />
                     <button type="button" onClick={editShrinked}>Submit</button>
                 </form>
-                {editorError !== "" ? <p>{editorError}</p> : null}
+                {editorError !== "" ? <p className="error_msg">{editorError}</p> : null}
             </div>
             <button 
                 className="shrink_again" 

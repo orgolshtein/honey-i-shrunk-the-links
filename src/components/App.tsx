@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from "react"
 import styled from "styled-components"
-import { darken } from "polished";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 
@@ -14,7 +13,7 @@ import ShrinkedStats from "./ShrinkedStats";
 import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
 import ServerError from "./ServerError";
 
-interface AppDivProps {
+interface MainContentProps {
   $display_shrinked: boolean
   $editor_display: boolean
 };
@@ -28,43 +27,20 @@ const Header = styled.h1`
   display: block;
   font-weight: bold;
   margin-top: 3rem;
-  font-family: "Griffy", cursive;
   text-transform: uppercase;
   text-align: center;
 `
 
-const AppDiv = styled.div<AppDivProps>`
+const MainContent = styled.div<MainContentProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4rem;
-  color: ${Color.mainText};
   opacity: ${(props):string => (props.$display_shrinked && props.$editor_display === false)? "0": "1"};
   transition: opacity 1.5s;
 
-  input{
-    font-size: 0.8rem;
-    padding-left: 0.7rem;
-    border-radius: 0.3rem;
-    color: ${Color.mainText};
-    font-family: "Griffy", cursive;
-
-    @media only screen and (max-width: 880px){
-      font-size: 1.2rem;
-    }
-
-    &:focus{
-      outline-width: 0;
-    }
-
-    &::placeholder {
-      color: ${Color.inputPlaceholder};
-      opacity: 1;
-    }
-  }
-
-  .shrinked{
-    width:80%;
+  .main_container{
+    width:${(props): string => props.$display_shrinked ? "80%": "100%"};
     transition: width 1s;
 
     form{
@@ -72,166 +48,48 @@ const AppDiv = styled.div<AppDivProps>`
       flex-direction: row;
       gap: 1.5rem;
       align-items: center;
-      padding-left: 15rem;
+      padding-left: ${(props): string => props.$display_shrinked ? "15rem" : "1rem"};
       transition: padding-left 1s;
       
       @media only screen and (max-width: 880px){
         flex-direction: column;
         gap: 1rem;
-        align-items: flex-start;
+        align-items: ${(props): string | null => props.$display_shrinked ? "flex-start" : null};
       }
         
       input{
-        height: 2.2rem;
-        width: 18rem;
+        height: ${(props): string => props.$display_shrinked ? "2.2rem" : "4.4rem"};
+        width: ${(props): string => props.$display_shrinked ? "18rem" : "37rem"};
         transition: height 1s,width 1s;
 
         @media only screen and (max-width: 880px){
-          height: 3rem;
-          width: 20rem;
+          height: ${(props): string | null => props.$display_shrinked ? "3rem" : null};
+          width: ${(props): string => props.$display_shrinked ? "20rem" : "50%"};
         }
 
         &::placeholder {
-            transition: all 1s;
-        }
-      }
-
-      button{
-        width: 6rem;
-        height: 1.8rem;
-        background: ${Color.button};
-        border: ${Color.buttonText} solid 1px;
-        border-radius: 0.2rem;
-        color: ${Color.buttonText};
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: width 1s, height 1s, display 1s, font-size 1s;
-        font-family: "Griffy", cursive;
-
-        @media only screen and (max-width: 880px){
-          height: 3rem;
-          width: 20rem;
-          font-size: 1.2rem;
-        }
-        
-        &:hover{
-          color: ${darken(0.5, Color.buttonText)};
-          background: ${darken(0.5, Color.button)};
-        }
-      }
-    }
-    .shrinked_output{
-      display: flex;
-      flex-direction: row;
-      padding-left: 25%;
-      gap: 2.4rem;
-      transition: all 1s;
-
-      @media only screen and (max-width: 880px){
-        flex-direction: column;
-        justify-content:center;
-        gap: 1rem;
-      }
-
-      button{
-        width: 6.5rem;
-        height: 1.8rem;
-        background: ${Color.button};
-        border: ${Color.buttonText} solid 1px;
-        border-radius: 0.2rem;
-        color: ${Color.buttonText};
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: width 1s, height 1s, display 1s, font-size 1s;
-        font-family: "Griffy", cursive;
-
-        @media only screen and (max-width: 880px){
-          width: 70%;
-          height: 3rem;
-          font-size: 1.2rem;
-        }
-        
-        &:hover{
-          color: ${darken(0.5, Color.buttonText)};
-          background: ${darken(0.5, Color.button)};
-        }
-      }
-    }
-
-    a{
-      color: ${Color.mainText};
-      font-size: 1rem;
-      display: block;
-      font-family: "Griffy", cursive;
-      text-decoration: underline;
-      width: 17rem;
-      transition: all 1s;
-
-      @media only screen and (max-width: 880px){
-          text-align: center;
-        }
-    }
-  }
-
-  .full{
-    width:100%;
-    transition: width 1s;
-
-    form{
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding-left: 0;
-      transition: padding-left 1s;
-      
-      @media only screen and (max-width: 880px){
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      input{
-        height: 4.4rem;
-        width: 37rem;
-        transition: height 1s,width 1s;
-
-        @media only screen and (max-width: 880px){
-          width: 50%;
-        }
-        
-        &::placeholder {
-          font-size: 1.5rem;
+          font-size: ${(props): string | null => props.$display_shrinked ? null : "1.5rem"};
           transition: all 1s;
         }
       }
 
       button{
-        width: 8rem;
-        height: 4rem;
-        background: ${Color.button};
-        border: ${Color.buttonText} solid 1px;
-        border-radius: 0.2rem;
-        color: ${Color.buttonText};
-        font-size: 1.5rem;
-        cursor: pointer;
+        width: ${(props): string => props.$display_shrinked ? "6rem" : "8rem"};
+        height: ${(props): string => props.$display_shrinked ? "1.8rem" : "4rem"};
+        font-size: ${(props): string => props.$display_shrinked ? "0.8rem" : "1.5rem"};
         transition: width 1s, height 1s, display 1s, font-size 1s;
-        font-family: "Griffy", cursive;
 
         @media only screen and (max-width: 880px){
-          width: 50%;
-        }
-        
-        &:hover{
-          color: ${darken(0.5, Color.buttonText)};
-          background: ${darken(0.5, Color.button)};
+          height: ${(props): string | null => props.$display_shrinked ? "3rem" : null};
+          width: ${(props): string => props.$display_shrinked ? "20rem" : "50%"};
+          font-size: ${(props): string | null => props.$display_shrinked ? "1.2rem" : null};
         }
       }
     }
-    
     .shrinked_output{
       display: flex;
       flex-direction: row;
-      padding-left: 10%;
+      padding-left: ${(props): string => props.$display_shrinked ? "25%" : "10%"};
       gap: 2.4rem;
       transition: all 1s;
 
@@ -239,48 +97,45 @@ const AppDiv = styled.div<AppDivProps>`
         flex-direction: column;
         justify-content: center;
         gap: 1rem;
-        width: 50%;
-        margin-left: 15%;
+        width: ${(props): string | null => props.$display_shrinked ? null : "50%"};
+        margin-left: ${(props): string | null => props.$display_shrinked ? null : "15%"};
       }
 
       button{
-        width: 8rem;
-        height: 4rem;
-        background: ${Color.button};
-        border: ${Color.buttonText} solid 1px;
-        border-radius: 0.2rem;
-        color: ${Color.buttonText};
+        width: ${(props): string => props.$display_shrinked ? "6.5rem" : "8rem"};
+        height: ${(props): string => props.$display_shrinked ? "1.8rem" : "4rem"};
         font-size: 0.8rem;
-        cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
-        font-family: "Griffy", cursive;
         
-        &:hover{
-          color: ${darken(0.5, Color.buttonText)};
-          background: ${darken(0.5, Color.button)};
+        @media only screen and (max-width: 880px){
+          width: 70%;
+          height: 3rem;
+          font-size: 1.2rem;
         }
       }
     }
 
     a{
-      color: ${Color.mainText};
-      font-size: 1.5rem;
+      font-size: ${(props): string => props.$display_shrinked ? "1rem" : "1.5rem"};
       display: block;
-      font-family: "Griffy", cursive;
       text-decoration: underline;
-      width: 35rem;
-      transition: all 1s;
-    }
-  }
+      width: ${(props): string => props.$display_shrinked ? "17rem" : "35rem"};
+      transition: font-size 1s, width 1s;
 
-  .editor_input{
-    form{
-        padding-left: 0;
+      @media only screen and (max-width: 880px){
+          text-align: center;
+        }
+    }
+
+    .editor_input{
+      form{
+          padding-left: 0;
+      }
     }
   }
 `
 
-const FooterDiv = styled.div`
+const Footer = styled.div`
   position: relative;
   bottom: 0;
   width: 100%;
@@ -293,12 +148,6 @@ const FooterDiv = styled.div`
 
   p{
     margin-top: .5rem;
-    font-family: "Griffy", cursive;
-    color: ${Color.mainText};
-
-    a{
-      color: ${Color.mainText};
-    }
   }
 `
 
@@ -345,11 +194,11 @@ const App: FC = (): JSX.Element => {
         : isServerError ? 
         <ServerError />
         :
-        <AppDiv 
+        <MainContent 
           $display_shrinked={isDisplayShrinked}
           $editor_display={isEditorDisplayed}
         >
-          <div className={isDisplayShrinked ? "shrinked" : "full"}>
+          <div className="main_container">
             <LinkInput 
               shrink_setter={setNewShrinked} 
               editor_display={isEditorDisplayed}
@@ -421,13 +270,13 @@ const App: FC = (): JSX.Element => {
             display_shrinked={isDisplayShrinked}
             editor_display={isEditorDisplayed}
           />
-      </AppDiv>
+      </MainContent>
       }
-      <FooterDiv>
+      <Footer>
         <p>Created by Or Golshtein:</p> 
         <p><a href="https://orgolshtein.wixsite.com/portfolio" target="_blank">https://orgolshtein.wixsite.com/portfolio</a></p> 
         <p><a href="https://github.com/orgolshtein" target="_blank">github.com/orgolshtein</a></p>
-      </FooterDiv>
+      </Footer>
     </>
   )
 };

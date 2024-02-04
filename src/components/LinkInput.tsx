@@ -28,15 +28,11 @@ const LinkInputDiv = styled.div<InputDivProps>`
         border: ${(props): string => props.$input_border} solid 1.5px;
     }
 
-    p{
+    .error_msg{
         position: relative;
         left: 30%;
-        text-shadow: 2px 2px 0px ${Color.textShadow};
-        color: ${Color.error};
         font-size: 1.5rem;
-        display: block;
         margin-top: 0.5rem;
-        font-family: "Griffy", cursive;
         padding-bottom: 3rem;
 
         @media only screen and (max-width: 880px){
@@ -93,12 +89,20 @@ const LinkInput = ({
     });
 
     return (
-        <LinkInputDiv $is_editor_displayed={editor_display} $input_border={inputBorder}>
+        <LinkInputDiv 
+        $is_editor_displayed={editor_display} 
+        $input_border={inputBorder}
+        >
             <form action="">
-                <input type="text" placeholder="Input Link to Shrink" ref={linkInputRef} onClick={() => setInputError("")}/>
-                <button type="button" ref={linkInputSubmitRef} onClick={shrinkLinkT}>Submit</button>
+                <input 
+                    type="text" 
+                    placeholder="Input Link to Shrink" 
+                    ref={linkInputRef} 
+                    onClick={() => setInputError("")}
+                />
+                <button type="button" ref={linkInputSubmitRef} onClick={shrinkLink}>Submit</button>
             </form>
-            <p>{inputError}</p>
+            <p className="error_msg">{inputError}</p>
         </LinkInputDiv>
       )
 };

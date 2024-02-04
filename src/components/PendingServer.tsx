@@ -15,7 +15,6 @@ const PendingServerDiv = styled.div`
         font-size: 2rem;
         display: block;
         font-weight: bold;
-        font-family: "Griffy", cursive;
 
         @media only screen and (max-width: 700px){
             text-align: center;
