@@ -2,10 +2,19 @@ import styled from "styled-components";
 import { Fragment } from "react";
 
 import { StatsData } from "../types";
+import * as Color from "../colors";
 
 interface StatsProps {
     $display_shrinked: boolean
     $editor_display: boolean
+}
+
+interface TopSitesProps {
+    header: string
+    stat: string
+    stats_data: StatsData[]
+    display_shrinked: boolean
+    editor_display: boolean
 }
 
 const StatsGrid = styled.div<StatsProps>`
@@ -15,7 +24,7 @@ const StatsGrid = styled.div<StatsProps>`
     row-gap: .5rem;
     grid-template-rows:auto;
     margin-left: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "10%"};
-    color: #29318cb2;
+    color: ${Color.mainText};
     font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.1rem"};
     font-family: "Griffy", cursive;
     text-align: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"};
@@ -40,7 +49,7 @@ const StatsGrid = styled.div<StatsProps>`
 `
 
 const StatsHeader = styled.h2<StatsProps>`
-    color: #29318c56;
+    color: ${Color.subHeader};
     grid-column-start: 1;
     grid-column-end: 3;
     font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "2rem"};
@@ -50,22 +59,13 @@ const StatsHeader = styled.h2<StatsProps>`
     transition: all 1.5s;
 `
 
-interface TopSitesProps {
-    header: string
-    stat: string
-    stats_data: StatsData[]
-    display_shrinked: boolean
-    editor_display: boolean
-}
-
 const TopSites = ({
     header,
     stat,
     stats_data,
     display_shrinked,
     editor_display
-}: TopSitesProps): JSX.Element => {
-    return(
+}: TopSitesProps): JSX.Element => (
         <StatsGrid $display_shrinked={display_shrinked} $editor_display={editor_display}>
             <StatsHeader 
                 $display_shrinked={display_shrinked} 
@@ -84,7 +84,6 @@ const TopSites = ({
             ))
             }
         </StatsGrid>
-    )
-};
+    );
 
 export default TopSites

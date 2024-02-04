@@ -1,6 +1,8 @@
 import { FC } from "react";
 import styled from "styled-components";
-import Textra from 'react-textra';
+import Textra from "react-textra";
+
+import * as Color from "../colors";
 
 const PendingServerDiv = styled.div`
     display: flex;
@@ -9,7 +11,7 @@ const PendingServerDiv = styled.div`
     height: 15rem;
 
     div{
-        color: #29318c56;
+        color: ${Color.subHeader};
         font-size: 2rem;
         display: block;
         font-weight: bold;
@@ -21,8 +23,7 @@ const PendingServerDiv = styled.div`
     }
 `
 
-const PendingServer: FC = (): JSX.Element => {
-    return (
+const PendingServer: FC = (): JSX.Element => (
         <PendingServerDiv>
             <div>
                 <Textra effect='scale' data={[
@@ -74,7 +75,6 @@ const PendingServer: FC = (): JSX.Element => {
                 />
             </div>
         </PendingServerDiv>
-    )
-};
+    );
 
 export default PendingServer;

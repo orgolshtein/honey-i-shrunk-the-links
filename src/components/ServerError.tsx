@@ -1,6 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
-import Textra from 'react-textra';
+import Textra from "react-textra";
+
+import * as Color from "../colors";
 
 const ServerErrorDiv = styled.div`
     display: flex;
@@ -9,8 +11,8 @@ const ServerErrorDiv = styled.div`
     height: 15rem;
 
     div{
-        text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-        color: #ff000071;
+        text-shadow: 2px 2px 0px ${Color.textShadow};
+        color: ${Color.error};
         font-size: 2rem;
         display: block;
         font-weight: bold;

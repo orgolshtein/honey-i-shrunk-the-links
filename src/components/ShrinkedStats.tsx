@@ -1,7 +1,9 @@
 import { darken } from "polished";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+
 import { PersonalLinkData, StatsData } from "../types";
+import * as Color from "../colors";
 import asyncHandler from "../hooks/useAsyncHandler";
 import { fetchSelectedStats } from "../api";
 import { updateStats } from "../hooks/useUpdateStats";
@@ -13,8 +15,26 @@ interface ShrinkedStatsDivProps {
     $editor_display: boolean
 }
 
+interface ShrinkedStatsProps {
+    selected: PersonalLinkData
+    stats_setter: {
+        top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
+        top_visited: Dispatch<SetStateAction<StatsData[]>>, 
+        last_visited: Dispatch<SetStateAction<StatsData[]>>,
+        selected: Dispatch<SetStateAction<PersonalLinkData>>
+    }
+    editor_setter: (editor_display: boolean) => void,
+    is_display_shrinked: (display_shrinked: boolean) => void
+    display_shrinked: boolean
+    editor_display: boolean
+};
+
+interface StatsOutputDivProps {
+    $is_output_displayed: boolean
+}
+
 const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
-    color: #29318cb2;
+    color: ${Color.mainText};
     width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "5rem" : "46rem"};
     font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.1rem"};
     font-family: "Griffy", cursive;
@@ -50,8 +70,8 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     .data_error{
         position: relative;
         left: 20%;
-        text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-        color: #ff000080;
+        text-shadow: 2px 2px 0px ${Color.textShadow};
+        color: ${Color.error};
         display: block;
         margin-top: 0.5rem;
 
@@ -62,7 +82,7 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     }
 
     a{
-        color: #29318cb2;
+        color: ${Color.mainText};
     }
 
     span{
@@ -98,10 +118,10 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         button{
             width: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "6rem"};
             height: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "2rem"};
-            background: #3949fb4d;
-            border: #548498 solid 1px;
+            background: ${Color.button};
+            border: ${Color.buttonText} solid 1px;
             border-radius: 0.2rem;
-            color: #548498;
+            color: ${Color.buttonText};
             font-size: ${(props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "0.8rem"};
             cursor: pointer;
             transition: all 2s;
@@ -114,31 +134,13 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
             }
             
             &:hover{
-              color: ${darken(0.5, "#548498")};
-              background: ${darken(0.5, "#3949fb4d")};
+              color: ${darken(0.5, Color.buttonText)};
+              background: ${darken(0.5, Color.button)};
             }
         }
     }
     
 `
-
-interface ShrinkedStatsProps {
-    selected: PersonalLinkData
-    stats_setter: {
-        top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
-        top_visited: Dispatch<SetStateAction<StatsData[]>>, 
-        last_visited: Dispatch<SetStateAction<StatsData[]>>,
-        selected: Dispatch<SetStateAction<PersonalLinkData>>
-    }
-    editor_setter: (editor_display: boolean) => void,
-    is_display_shrinked: (display_shrinked: boolean) => void
-    display_shrinked: boolean
-    editor_display: boolean
-};
-
-interface StatsOutputDivProps {
-    $is_output_displayed: boolean
-}
 
 const StatsOutputDiv = styled.div<StatsOutputDivProps>`
     @media only screen and (max-width: 700px){
@@ -189,10 +191,10 @@ const ShrinkedStats = ({
     const [isShrinkedOutput, setIsShrinkedOutput] = useState<boolean>(false);
     const [shrinkedDataError, setShrinkedDataError] = useState<string>("");
     const [outputButton, setOutputButton] = useState<string>("Show");
-    const [inputBorder, setInputBorder] = useState<string>("#3949fb4d");
+    const [inputBorder, setInputBorder] = useState<string>(Color.inputOutline);
     const ShrinkedStatsInputRef = useRef<HTMLInputElement>(null);
 
-    useInputBorderToggle(shrinkedDataError, setInputBorder, "#ff000080", "#3949fb4d");
+    useInputBorderToggle(shrinkedDataError, setInputBorder, Color.error, Color.inputOutline);
 
     useEffect(()=> {
         isShrinkedOutput?

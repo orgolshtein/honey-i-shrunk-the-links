@@ -1,6 +1,8 @@
 import { createGlobalStyle } from "styled-components";
 import Reset from "styled-reset";
 
+import * as Color from "./colors"
+
 export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
   ${Reset}
   #root {
@@ -18,24 +20,24 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
   html {
     font: 13.5px 'Helvetica Neue',Arial;
     height: 160%;
-    background: #89CFF0;
+    background: ${Color.background1};
     background: -moz-linear-gradient(
       top,
-      #89CFF0 0%,
-      #f5f5dc 10%,
-      #89CFF0 100%
+      ${Color.background1} 0%,
+      ${Color.background2} 10%,
+      ${Color.background1} 100%
     );
     background: -webkit-linear-gradient(
       top,
-      #89CFF0 0%,
-      #f5f5dc 10%,
-      #89CFF0 100%
+      ${Color.background1} 0%,
+      ${Color.background2} 10%,
+      ${Color.background1} 100%
     );
     background: linear-gradient(
       to bottom,
-      #89CFF0 0%,
-      #f5f5dc 10%,
-      #89CFF0 100%
+      ${Color.background1} 0%,
+      ${Color.background2} 10%,
+      ${Color.background1} 100%
     );
     font-family: Arial,sans-serif;
     * {

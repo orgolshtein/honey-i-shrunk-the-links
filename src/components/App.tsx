@@ -6,6 +6,7 @@ import { Carousel } from 'react-responsive-carousel';
 
 import LinkInput from "./LinkInput"
 import { LinkData, PersonalLinkData, StatsData } from "../types"
+import * as Color from "../colors"
 import ShrinkedEditor from "./ShrinkedEditor"
 import PendingServer from "./PendingServer";
 import TopSites from "./TopSites";
@@ -13,10 +14,15 @@ import ShrinkedStats from "./ShrinkedStats";
 import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
 import ServerError from "./ServerError";
 
+interface AppDivProps {
+  $display_shrinked: boolean
+  $editor_display: boolean
+};
+
 const Header = styled.h1`
   position: relative;
-  text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-  color: #7a85ff4d;
+  text-shadow: 2px 2px 0px ${Color.textShadow};
+  color: ${Color.header};
   font-size: 3rem;
   -webkit-text-fill-color: transparent;
   display: block;
@@ -27,16 +33,12 @@ const Header = styled.h1`
   text-align: center;
 `
 
-interface AppDivProps {
-  $display_shrinked: boolean
-  $editor_display: boolean
-}
-
 const AppDiv = styled.div<AppDivProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4rem;
+  color: ${Color.mainText};
   opacity: ${(props):string => (props.$display_shrinked && props.$editor_display === false)? "0": "1"};
   transition: opacity 1.5s;
 
@@ -44,7 +46,7 @@ const AppDiv = styled.div<AppDivProps>`
     font-size: 0.8rem;
     padding-left: 0.7rem;
     border-radius: 0.3rem;
-    color: #0310a588;
+    color: ${Color.mainText};
     font-family: "Griffy", cursive;
 
     @media only screen and (max-width: 880px){
@@ -56,7 +58,7 @@ const AppDiv = styled.div<AppDivProps>`
     }
 
     &::placeholder {
-      color: #3949fb4d;
+      color: ${Color.inputPlaceholder};
       opacity: 1;
     }
   }
@@ -97,10 +99,10 @@ const AppDiv = styled.div<AppDivProps>`
       button{
         width: 6rem;
         height: 1.8rem;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
+        background: ${Color.button};
+        border: ${Color.buttonText} solid 1px;
         border-radius: 0.2rem;
-        color: #548498;
+        color: ${Color.buttonText};
         font-size: 0.8rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
@@ -113,8 +115,8 @@ const AppDiv = styled.div<AppDivProps>`
         }
         
         &:hover{
-          color: ${darken(0.5, "#548498")};
-          background: ${darken(0.5, "#3949fb4d")};
+          color: ${darken(0.5, Color.buttonText)};
+          background: ${darken(0.5, Color.button)};
         }
       }
     }
@@ -134,10 +136,10 @@ const AppDiv = styled.div<AppDivProps>`
       button{
         width: 6.5rem;
         height: 1.8rem;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
+        background: ${Color.button};
+        border: ${Color.buttonText} solid 1px;
         border-radius: 0.2rem;
-        color: #548498;
+        color: ${Color.buttonText};
         font-size: 0.8rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
@@ -150,14 +152,14 @@ const AppDiv = styled.div<AppDivProps>`
         }
         
         &:hover{
-          color: ${darken(0.5, "#548498")};
-          background: ${darken(0.5, "#3949fb4d")};
+          color: ${darken(0.5, Color.buttonText)};
+          background: ${darken(0.5, Color.button)};
         }
       }
     }
 
     a{
-      color: #29318cb2;
+      color: ${Color.mainText};
       font-size: 1rem;
       display: block;
       font-family: "Griffy", cursive;
@@ -206,10 +208,10 @@ const AppDiv = styled.div<AppDivProps>`
       button{
         width: 8rem;
         height: 4rem;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
+        background: ${Color.button};
+        border: ${Color.buttonText} solid 1px;
         border-radius: 0.2rem;
-        color: #548498;
+        color: ${Color.buttonText};
         font-size: 1.5rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
@@ -220,8 +222,8 @@ const AppDiv = styled.div<AppDivProps>`
         }
         
         &:hover{
-          color: ${darken(0.5, "#548498")};
-          background: ${darken(0.5, "#3949fb4d")};
+          color: ${darken(0.5, Color.buttonText)};
+          background: ${darken(0.5, Color.button)};
         }
       }
     }
@@ -244,24 +246,24 @@ const AppDiv = styled.div<AppDivProps>`
       button{
         width: 8rem;
         height: 4rem;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
+        background: ${Color.button};
+        border: ${Color.buttonText} solid 1px;
         border-radius: 0.2rem;
-        color: #548498;
+        color: ${Color.buttonText};
         font-size: 0.8rem;
         cursor: pointer;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         font-family: "Griffy", cursive;
         
         &:hover{
-          color: ${darken(0.5, "#548498")};
-          background: ${darken(0.5, "#3949fb4d")};
+          color: ${darken(0.5, Color.buttonText)};
+          background: ${darken(0.5, Color.button)};
         }
       }
     }
 
     a{
-      color: #3f4bcdb1;
+      color: ${Color.mainText};
       font-size: 1.5rem;
       display: block;
       font-family: "Griffy", cursive;
@@ -292,10 +294,10 @@ const FooterDiv = styled.div`
   p{
     margin-top: .5rem;
     font-family: "Griffy", cursive;
-    color: #29318cb2;
+    color: ${Color.mainText};
 
     a{
-      color: #29318cb2;
+      color: ${Color.mainText};
     }
   }
 `

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { LinkData } from "../types";
+import * as Color from "../colors";
 import asyncHandler from "../hooks/useAsyncHandler";
 import { postNewShrinked, server_link } from "../api";
 import useInputBorderToggle from "../hooks/useInputBorderToggle";
@@ -9,6 +10,13 @@ import useInputBorderToggle from "../hooks/useInputBorderToggle";
 interface InputDivProps {
     $is_editor_displayed: boolean
     $input_border: string
+}
+
+interface LinkInputProps {
+    shrink_setter: (new_shrink: LinkData) => void,
+    editor_display: boolean,
+    editor_setter: (editor_display: boolean) => void,
+    is_display_shrinked: (shrinked_display: boolean) => void
 }
 
 const LinkInputDiv = styled.div<InputDivProps>`
@@ -23,8 +31,8 @@ const LinkInputDiv = styled.div<InputDivProps>`
     p{
         position: relative;
         left: 30%;
-        text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-        color: #ff000080;
+        text-shadow: 2px 2px 0px ${Color.textShadow};
+        color: ${Color.error};
         font-size: 1.5rem;
         display: block;
         margin-top: 0.5rem;
@@ -38,13 +46,6 @@ const LinkInputDiv = styled.div<InputDivProps>`
     }
 `
 
-interface LinkInputProps {
-    shrink_setter: (new_shrink: LinkData) => void,
-    editor_display: boolean,
-    editor_setter: (editor_display: boolean) => void,
-    is_display_shrinked: (shrinked_display: boolean) => void
-}
-
 const LinkInput = ({ 
     shrink_setter, 
     editor_display, 
@@ -52,16 +53,17 @@ const LinkInput = ({
     is_display_shrinked 
 }: LinkInputProps): JSX.Element => {
     const [inputError, setInputError] = useState<string>("");
+    const [inputBorder, setInputBorder] = useState<string>(Color.inputOutline);
     const linkInputRef = useRef<HTMLInputElement>(null);
-    const [inputBorder, setInputBorder] = useState<string>("#3949fb4d");
+    const linkInputSubmitRef = useRef<HTMLButtonElement>(null);
 
-    useInputBorderToggle(inputError, setInputBorder, "#ff000080", "#3949fb4d");
+    useInputBorderToggle(inputError, setInputBorder, Color.error, Color.inputOutline);
     
     useEffect(()=>{
         window.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
-                document.querySelector("button")?.click();
+                (linkInputSubmitRef.current as HTMLButtonElement).click();
             }
         });
     }, []);
@@ -94,7 +96,7 @@ const LinkInput = ({
         <LinkInputDiv $is_editor_displayed={editor_display} $input_border={inputBorder}>
             <form action="">
                 <input type="text" placeholder="Input Link to Shrink" ref={linkInputRef} onClick={() => setInputError("")}/>
-                <button type="button" onClick={shrinkLink}>Submit</button>
+                <button type="button" ref={linkInputSubmitRef} onClick={shrinkLinkT}>Submit</button>
             </form>
             <p>{inputError}</p>
         </LinkInputDiv>

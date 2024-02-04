@@ -3,6 +3,7 @@ import { darken } from "polished";
 import styled from "styled-components";
 
 import { LinkData, PersonalLinkData, StatsData } from "../types";
+import * as Color from "../colors";
 import asyncHandler from "../hooks/useAsyncHandler";
 import { patchShrinked } from "../api";
 import { updateStats } from "../hooks/useUpdateStats";
@@ -12,6 +13,20 @@ interface EditorDivProps {
     $is_displayed: boolean
     $is_input: boolean
     $input_border: string
+}
+
+interface EditorProps {
+    new_shrink: LinkData,
+    shrink_setter: (new_shrink: LinkData) => void,
+    editor_display: boolean,
+    editor_setter: (editor_display: boolean) => void,
+    is_display_shrinked: (shrinked_display: boolean) => void
+    stats_setter: {
+        top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
+        top_visited: Dispatch<SetStateAction<StatsData[]>>, 
+        last_visited: Dispatch<SetStateAction<StatsData[]>>,
+        selected: Dispatch<SetStateAction<PersonalLinkData>>
+    }
 }
 
 const ShrinkedEditorDiv = styled.div<EditorDivProps>`
@@ -58,8 +73,8 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
     }
 
     p{
-        text-shadow: 2px 2px 0px rgba(71, 0, 37, 0.2);
-        color: #ff000080;
+        text-shadow: 2px 2px 0px ${Color.textShadow};
+        color: ${Color.error};;
         font-size: 1rem;
         display: block;
         margin-top: 0.5rem;
@@ -69,10 +84,10 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
     .shrink_again{
         width: 13rem;
         height: 3rem;
-        background: #3949fb4d;
-        border: #548498 solid 1px;
+        background: ${Color.button};
+        border: ${Color.buttonText} solid 1px;
         border-radius: 0.2rem;
-        color: #548498;
+        color: ${Color.buttonText};
         font-size: 1.1rem;
         margin-left: 25%;
         cursor: pointer;
@@ -85,25 +100,11 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
         }
         
         &:hover{
-            color: ${darken(0.5, "#548498")};
-            background: ${darken(0.5, "#3949fb4d")};
+            color: ${darken(0.5, Color.buttonText)};
+            background: ${darken(0.5, Color.button)};
         }
     }
 `
-
-interface EditorProps {
-    new_shrink: LinkData,
-    shrink_setter: (new_shrink: LinkData) => void,
-    editor_display: boolean,
-    editor_setter: (editor_display: boolean) => void,
-    is_display_shrinked: (shrinked_display: boolean) => void
-    stats_setter: {
-        top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
-        top_visited: Dispatch<SetStateAction<StatsData[]>>, 
-        last_visited: Dispatch<SetStateAction<StatsData[]>>,
-        selected: Dispatch<SetStateAction<PersonalLinkData>>
-    }
-}
 
 const ShrinkedEditor = ({ 
     new_shrink, 
@@ -115,10 +116,10 @@ const ShrinkedEditor = ({
 }: EditorProps): JSX.Element => {
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
     const [editorError, setEditorError] = useState<string>("");
+    const [inputBorder, setInputBorder] = useState<string>(Color.inputOutline);
     const editorInputRef = useRef<HTMLInputElement>(null);
-    const [inputBorder, setInputBorder] = useState<string>("#3949fb4d");
 
-    useInputBorderToggle(editorError, setInputBorder, "#ff000080", "#3949fb4d");
+    useInputBorderToggle(editorError, setInputBorder, Color.error, Color.inputOutline);
 
     const editShrinked: () => void = asyncHandler(async (): Promise<void> => {
         const edited_shrink: string = (editorInputRef.current as HTMLInputElement).value.toString();
@@ -172,7 +173,11 @@ const ShrinkedEditor = ({
                 </form>
                 {editorError !== "" ? <p>{editorError}</p> : null}
             </div>
-            <button className="shrink_again" type="button" onClick={shrinkAnother}>Shrink Another Link?</button>
+            <button 
+                className="shrink_again" 
+                type="button" 
+                onClick={shrinkAnother}
+            >Shrink Another Link?</button>
         </ShrinkedEditorDiv>
     )
 };
