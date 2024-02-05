@@ -21,7 +21,7 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
       padding-left: 0.7rem;
       border-radius: 0.3rem;
       color: ${Color.mainText};
-      font-family: "Griffy", cursive;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;;
 
       &:focus{
         outline-width: 0;
@@ -38,7 +38,7 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
       border-radius: 0.2rem;
       color: ${Color.buttonText};
       cursor: pointer;
-      font-family: "Griffy", cursive;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 
       &:hover{
         color: ${darken(0.5, Color.buttonText)};
@@ -62,7 +62,7 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
   }
 
   html {
-    font: 13.5px 'Helvetica Neue',Arial;
+    font: 13.5px;
     height: 160%;
     color: ${Color.mainText};
     background: ${Color.background1};
@@ -84,7 +84,7 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
       ${Color.background2} 10%,
       ${Color.background1} 100%
     );
-    font-family: "Griffy", cursive;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     * {
       margin: 0;
       padding: 0;
@@ -92,8 +92,8 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
     }
 
     @media only screen and (max-width: 880px){
-      font: 16px 'Helvetica Neue',Arial;
-      font-family: "Griffy", cursive;
+      font: 16px;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     }
   };
 `
