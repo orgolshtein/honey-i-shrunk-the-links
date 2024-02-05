@@ -3,19 +3,19 @@ import styled from "styled-components"
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 
-import LinkInput from "./LinkInput"
 import { LinkData, PersonalLinkData, StatsData } from "../types"
 import * as Color from "../colors"
-import ShrinkedEditor from "./ShrinkedEditor"
+import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
+import LinkInput from "./LinkInput"
 import PendingServer from "./PendingServer";
+import ServerError from "./ServerError";
+import ShrinkedEditor from "./ShrinkedEditor"
 import TopSites from "./TopSites";
 import ShrinkedStats from "./ShrinkedStats";
-import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
-import ServerError from "./ServerError";
 
 interface MainContentProps {
-  $display_shrinked: boolean
-  $editor_display: boolean
+  $is_display_shrinked: boolean
+  $is_editor_displayed: boolean
 };
 
 const Header = styled.h1`
@@ -36,11 +36,11 @@ const MainContent = styled.div<MainContentProps>`
   flex-direction: column;
   align-items: center;
   gap: 4rem;
-  opacity: ${(props):string => (props.$display_shrinked && props.$editor_display === false)? "0": "1"};
+  opacity: ${(props):string => (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0": "1"};
   transition: opacity 1.5s;
 
   .main_container{
-    width:${(props): string => props.$display_shrinked ? "80%": "100%"};
+    width:${(props): string => props.$is_display_shrinked ? "80%": "100%"};
     transition: width 1s;
 
     form{
@@ -48,48 +48,48 @@ const MainContent = styled.div<MainContentProps>`
       flex-direction: row;
       gap: 1.5rem;
       align-items: center;
-      padding-left: ${(props): string => props.$display_shrinked ? "15rem" : "1rem"};
+      padding-left: ${(props): string => props.$is_display_shrinked ? "15rem" : "1rem"};
       transition: padding-left 1s;
       
       @media only screen and (max-width: 880px){
         flex-direction: column;
         gap: 1rem;
-        align-items: ${(props): string | null => props.$display_shrinked ? "flex-start" : null};
+        align-items: ${(props): string | null => props.$is_display_shrinked ? "flex-start" : null};
       }
         
       input{
-        height: ${(props): string => props.$display_shrinked ? "2.2rem" : "4.4rem"};
-        width: ${(props): string => props.$display_shrinked ? "18rem" : "37rem"};
+        height: ${(props): string => props.$is_display_shrinked ? "2.2rem" : "4.4rem"};
+        width: ${(props): string => props.$is_display_shrinked ? "18rem" : "37rem"};
         transition: height 1s,width 1s;
 
         @media only screen and (max-width: 880px){
-          height: ${(props): string | null => props.$display_shrinked ? "3rem" : null};
-          width: ${(props): string => props.$display_shrinked ? "20rem" : "50%"};
+          height: ${(props): string | null => props.$is_display_shrinked ? "3rem" : null};
+          width: ${(props): string => props.$is_display_shrinked ? "20rem" : "50%"};
         }
 
         &::placeholder {
-          font-size: ${(props): string | null => props.$display_shrinked ? null : "1.5rem"};
+          font-size: ${(props): string | null => props.$is_display_shrinked ? null : "1.5rem"};
           transition: all 1s;
         }
       }
 
       button{
-        width: ${(props): string => props.$display_shrinked ? "6rem" : "8rem"};
-        height: ${(props): string => props.$display_shrinked ? "1.8rem" : "4rem"};
-        font-size: ${(props): string => props.$display_shrinked ? "0.8rem" : "1.5rem"};
+        width: ${(props): string => props.$is_display_shrinked ? "6rem" : "8rem"};
+        height: ${(props): string => props.$is_display_shrinked ? "1.8rem" : "4rem"};
+        font-size: ${(props): string => props.$is_display_shrinked ? "0.8rem" : "1.5rem"};
         transition: width 1s, height 1s, display 1s, font-size 1s;
 
         @media only screen and (max-width: 880px){
-          height: ${(props): string | null => props.$display_shrinked ? "3rem" : null};
-          width: ${(props): string => props.$display_shrinked ? "20rem" : "50%"};
-          font-size: ${(props): string | null => props.$display_shrinked ? "1.2rem" : null};
+          height: ${(props): string | null => props.$is_display_shrinked ? "3rem" : null};
+          width: ${(props): string => props.$is_display_shrinked ? "20rem" : "50%"};
+          font-size: ${(props): string | null => props.$is_display_shrinked ? "1.2rem" : null};
         }
       }
     }
     .shrinked_output{
       display: flex;
       flex-direction: row;
-      padding-left: ${(props): string => props.$display_shrinked ? "25%" : "10%"};
+      padding-left: ${(props): string => props.$is_display_shrinked ? "25%" : "10%"};
       gap: 2.4rem;
       transition: all 1s;
 
@@ -97,13 +97,13 @@ const MainContent = styled.div<MainContentProps>`
         flex-direction: column;
         justify-content: center;
         gap: 1rem;
-        width: ${(props): string | null => props.$display_shrinked ? null : "50%"};
-        margin-left: ${(props): string | null => props.$display_shrinked ? null : "15%"};
+        width: ${(props): string | null => props.$is_display_shrinked ? null : "50%"};
+        margin-left: ${(props): string | null => props.$is_display_shrinked ? null : "15%"};
       }
 
       button{
-        width: ${(props): string => props.$display_shrinked ? "6.5rem" : "8rem"};
-        height: ${(props): string => props.$display_shrinked ? "1.8rem" : "4rem"};
+        width: ${(props): string => props.$is_display_shrinked ? "6.5rem" : "8rem"};
+        height: ${(props): string => props.$is_display_shrinked ? "1.8rem" : "4rem"};
         font-size: 0.8rem;
         transition: width 1s, height 1s, display 1s, font-size 1s;
         
@@ -116,10 +116,10 @@ const MainContent = styled.div<MainContentProps>`
     }
 
     a{
-      font-size: ${(props): string => props.$display_shrinked ? "1rem" : "1.5rem"};
+      font-size: ${(props): string => props.$is_display_shrinked ? "1rem" : "1.5rem"};
       display: block;
       text-decoration: underline;
-      width: ${(props): string => props.$display_shrinked ? "17rem" : "35rem"};
+      width: ${(props): string => props.$is_display_shrinked ? "17rem" : "35rem"};
       transition: font-size 1s, width 1s;
 
       @media only screen and (max-width: 880px){
@@ -195,27 +195,27 @@ const App: FC = (): JSX.Element => {
         <ServerError />
         :
         <MainContent 
-          $display_shrinked={isDisplayShrinked}
-          $editor_display={isEditorDisplayed}
+          $is_display_shrinked={isDisplayShrinked}
+          $is_editor_displayed={isEditorDisplayed}
         >
           <div className="main_container">
             <LinkInput 
-              shrink_setter={setNewShrinked} 
-              editor_display={isEditorDisplayed}
-              editor_setter={setIsEditorDisplayed}
-              is_display_shrinked={setIsDisplayShrinked}
+              set_new_shrinked={setNewShrinked} 
+              is_editor_displayed={isEditorDisplayed}
+              set_is_editor_displayed={setIsEditorDisplayed}
+              set_is_display_shrinked={setIsDisplayShrinked}
             />
             <ShrinkedEditor 
-              new_shrink={newShrinked} 
-              shrink_setter={setNewShrinked} 
-              editor_display={isEditorDisplayed}
-              editor_setter={setIsEditorDisplayed}
-              is_display_shrinked={setIsDisplayShrinked}
-              stats_setter={{
-                top_shrinks: setTopShrinked, 
-                top_visited: setTopVisited, 
-                last_visited: setLastVisited,
-                selected: setSelectedShrinked
+              new_shrinked={newShrinked} 
+              set_new_shrinked={setNewShrinked} 
+              is_editor_displayed={isEditorDisplayed}
+              set_is_editor_displayed={setIsEditorDisplayed}
+              set_is_display_shrinked={setIsDisplayShrinked}
+              stats_setters={{
+                set_top_shrinks: setTopShrinked, 
+                set_top_visited: setTopVisited, 
+                set_last_visited: setLastVisited,
+                set_selected: setSelectedShrinked
               }}
             />
           </div>
@@ -237,38 +237,38 @@ const App: FC = (): JSX.Element => {
           >
             <TopSites
               header="Top Shrinked Sites:"
-              stat="Shrinks"
+              stats_title="Shrinks"
               stats_data={topShrinked}
-              display_shrinked={isDisplayShrinked}
-              editor_display={isEditorDisplayed}
+              is_display_shrinked={isDisplayShrinked}
+              is_editor_displayed={isEditorDisplayed}
             />
             <TopSites
               header="Top Visited Sites:"
-              stat="Visits"
+              stats_title="Visits"
               stats_data={topVisited}
-              display_shrinked={isDisplayShrinked}
-              editor_display={isEditorDisplayed}
+              is_display_shrinked={isDisplayShrinked}
+              is_editor_displayed={isEditorDisplayed}
             />
             <TopSites
               header="Recently Visited:"
-              stat="Last Visit"
+              stats_title="Last Visit"
               stats_data={lastVisited}
-              display_shrinked={isDisplayShrinked}
-              editor_display={isEditorDisplayed}
+              is_display_shrinked={isDisplayShrinked}
+              is_editor_displayed={isEditorDisplayed}
             />
           </Carousel>
           <ShrinkedStats 
             selected={selectedShrinked}
-            stats_setter={{
-              top_shrinks: setTopShrinked, 
-              top_visited: setTopVisited, 
-              last_visited: setLastVisited,
-              selected: setSelectedShrinked
+            stats_setters={{
+              set_top_shrinks: setTopShrinked, 
+              set_top_visited: setTopVisited, 
+              set_last_visited: setLastVisited,
+              set_selected: setSelectedShrinked
             }}
-            editor_setter={setIsEditorDisplayed}
-            is_display_shrinked={setIsDisplayShrinked}
-            display_shrinked={isDisplayShrinked}
-            editor_display={isEditorDisplayed}
+            set_is_editor_displayed={setIsEditorDisplayed}
+            set_is_display_shrinked={setIsDisplayShrinked}
+            is_display_shrinked={isDisplayShrinked}
+            is_editor_displayed={isEditorDisplayed}
           />
       </MainContent>
       }

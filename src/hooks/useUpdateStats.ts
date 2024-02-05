@@ -1,22 +1,25 @@
-import { Dispatch, SetStateAction } from "react";
 import { fetchTopShrinked, fetchTopVisited, fetchLastVisited, fetchSelectedStats } from "../api";
 import { PersonalLinkData, StatsData } from "../types";
 import asyncHandler from "./useAsyncHandler";
 
-export const updateStats = asyncHandler(async (stats_setter: {
-    top_shrinks: Dispatch<SetStateAction<StatsData[]>>,
-    top_visited: Dispatch<SetStateAction<StatsData[]>>,
-    last_visited: Dispatch<SetStateAction<StatsData[]>>,
-    selected: Dispatch<SetStateAction<PersonalLinkData>>
-}, ref?: React.RefObject<HTMLInputElement>) => {
+const updateStats = asyncHandler(async (
+    stats_setters: {
+        set_top_shrinks: (top_shrinks: StatsData[]) => void,
+        set_top_visited: (top_visited: StatsData[]) => void,
+        set_last_visited: (last_visited: StatsData[]) => void,
+        set_selected: (selected: PersonalLinkData) => void
+    }, input_ref?: React.RefObject<HTMLInputElement>
+): Promise<void> => {
     const shrinks_array: StatsData[] = await fetchTopShrinked();
-    stats_setter.top_shrinks(shrinks_array);
+    stats_setters.set_top_shrinks(shrinks_array);
     const visited_array: StatsData[] = await fetchTopVisited();
-    stats_setter.top_visited(visited_array)
+    stats_setters.set_top_visited(visited_array)
     const last_visited: StatsData[] = await fetchLastVisited();
-    stats_setter.last_visited(last_visited);
-    if (ref){
-        const selected_link: PersonalLinkData = await fetchSelectedStats(ref);
-        stats_setter.selected(selected_link);
+    stats_setters.set_last_visited(last_visited);
+    if (input_ref){
+        const selected_link: PersonalLinkData = await fetchSelectedStats(input_ref);
+        stats_setters.set_selected(selected_link);
     }
 });
+
+export default updateStats;

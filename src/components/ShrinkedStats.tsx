@@ -1,31 +1,31 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { PersonalLinkData, StatsData } from "../types";
 import * as Color from "../colors";
-import asyncHandler from "../hooks/useAsyncHandler";
 import { fetchSelectedStats } from "../api";
-import { updateStats } from "../hooks/useUpdateStats";
-import useInputBorderToggle from "../hooks/useInputBorderToggle";
+import asyncHandler from "../hooks/useAsyncHandler";
+import updateStats from "../hooks/useUpdateStats";
+import inputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface ShrinkedStatsDivProps {
     $input_border: string
-    $display_shrinked: boolean 
-    $editor_display: boolean
+    $is_display_shrinked: boolean 
+    $is_editor_displayed: boolean
 }
 
 interface ShrinkedStatsProps {
     selected: PersonalLinkData
-    stats_setter: {
-        top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
-        top_visited: Dispatch<SetStateAction<StatsData[]>>, 
-        last_visited: Dispatch<SetStateAction<StatsData[]>>,
-        selected: Dispatch<SetStateAction<PersonalLinkData>>
+    stats_setters: {
+        set_top_shrinks: (top_shrinks: StatsData[]) => void,
+        set_top_visited: (top_visited: StatsData[]) => void,
+        set_last_visited: (last_visited: StatsData[]) => void,
+        set_selected: (selected: PersonalLinkData) => void
     }
-    editor_setter: (editor_display: boolean) => void,
-    is_display_shrinked: (display_shrinked: boolean) => void
-    display_shrinked: boolean
-    editor_display: boolean
+    set_is_editor_displayed: (is_editor_displayed: boolean) => void,
+    set_is_display_shrinked: (is_display_shrinked: boolean) => void
+    is_display_shrinked: boolean
+    is_editor_displayed: boolean
 };
 
 interface StatsOutputDivProps {
@@ -34,34 +34,42 @@ interface StatsOutputDivProps {
 
 const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     width: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "5rem" : "46rem"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "5rem" : "46rem"
     };
     font-size: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.1rem"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "1.1rem"
     };
     padding-left: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "8%"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "40%" : "8%"
     };
     transition: all 0.2s;
 
     @media only screen and (max-width: 700px){
         width: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "60%"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "3rem" : "60%"
         };
         padding-left: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "6%"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "40%" : "6%"
         };
     }
 
     @media only screen and (max-width: 600px){
         width: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "50%"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "3rem" : "50%"
         };
         font-size: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0rem" : "1.5rem"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "1.5rem"
         };
         padding-left: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "40%" : "0"
         };
     }
 
@@ -72,10 +80,12 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
     
     .shrinked_stats_msg{
         padding-left: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "40%" : "0"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "40%" : "0"
         };
         text-align: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "center" : "left"
         };
         transition: all 2s;
 
@@ -112,30 +122,35 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         input{
             width: ${
                 (props): string =>
-                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "26rem"
+                (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "26rem"
             };
             height: ${
                 (props): string =>
-                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "2.2rem"
+                (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "2.2rem"
             };
             margin-left: ${
                 (props): string =>
-                (props.$display_shrinked && props.$editor_display === false)? "40%" : "0"
+                (props.$is_display_shrinked && props.$is_editor_displayed === false)? "40%" : "0"
             };
             border: ${(props): string => props.$input_border} solid 1.5px;
+            font-size: 0.8rem;
             transition: width 2s, margin-left 2s, height 2s;
+
+            @media only screen and (max-width: 880px){
+                font-size: 1.2rem;
+            }
 
             @media only screen and (max-width: 700px){
                 height: ${
                     (props): string =>
-                    (props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"
+                    (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "4rem"
                 };
             }
 
             @media only screen and (max-width: 600px){
                 width: ${
                     (props): string =>
-                    (props.$display_shrinked && props.$editor_display === false)? "0rem" : "24rem"
+                    (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "24rem"
                 };
             }
         }
@@ -143,30 +158,30 @@ const ShrinkedStatsDiv = styled.div<ShrinkedStatsDivProps>`
         button{
             width: ${
                 (props): string =>
-                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "6rem"
+                (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "6rem"
             };
             height: ${
                 (props): string =>
-                (props.$display_shrinked && props.$editor_display === false)? "0rem" : "2rem"
+                (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "2rem"
             };
             font-size: ${
                 (props): string =>
-                (props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "0.8rem"
+                (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0.1rem" : "0.8rem"
             };
             transition: width 2s, height 2s, display 2s, font-size 2s;
 
             @media only screen and (max-width: 700px){
                 width: ${(
                     props): string =>
-                    (props.$display_shrinked && props.$editor_display === false)? "0" : "100%"
+                    (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0" : "100%"
                 };
                 height: ${
                     (props): string =>
-                    (props.$display_shrinked && props.$editor_display === false)? "0rem" : "4rem"
+                    (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0rem" : "4rem"
                 };
                 font-size: ${
                     (props): string =>
-                    (props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.5rem"
+                    (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0.1rem" : "1.5rem"
                 };
             }
         }
@@ -209,16 +224,15 @@ const StatsOutputDiv = styled.div<StatsOutputDivProps>`
         }
         }
     }
-
-    `
+`
 
 const ShrinkedStats = ({
     selected,
-    stats_setter,
-    editor_setter,
+    stats_setters,
+    set_is_editor_displayed,
+    set_is_display_shrinked,
     is_display_shrinked,
-    display_shrinked,
-    editor_display
+    is_editor_displayed
 }: ShrinkedStatsProps): JSX.Element => {
     const [isShrinkedOutput, setIsShrinkedOutput] = useState<boolean>(false);
     const [shrinkedDataError, setShrinkedDataError] = useState<string>("");
@@ -226,9 +240,9 @@ const ShrinkedStats = ({
     const [inputBorder, setInputBorder] = useState<string>(Color.inputOutline);
     const ShrinkedStatsInputRef = useRef<HTMLInputElement>(null);
 
-    useInputBorderToggle(shrinkedDataError, setInputBorder, Color.error, Color.inputOutline);
+    inputBorderToggle(shrinkedDataError, setInputBorder, Color.error, Color.inputOutline);
 
-    useEffect(()=> {
+    useEffect(():void => {
         isShrinkedOutput?
         setOutputButton("Close") :
         setOutputButton("Show")
@@ -236,14 +250,14 @@ const ShrinkedStats = ({
 
     const showLinkStats: () => void = asyncHandler(async (): Promise<void> => {
         setShrinkedDataError("");
-        is_display_shrinked(false);
-        editor_setter(false);
+        set_is_display_shrinked(false);
+        set_is_editor_displayed(false);
         const data: PersonalLinkData | string = await fetchSelectedStats(ShrinkedStatsInputRef);
         if (typeof data !== "string"){
-            stats_setter.selected({...data})
+            stats_setters.set_selected({...data})
             setIsShrinkedOutput(true);
         } else {
-            stats_setter.selected({
+            stats_setters.set_selected({
                 target: "",
                 link: "",
                 visits: 0,
@@ -256,8 +270,8 @@ const ShrinkedStats = ({
     return (
         <ShrinkedStatsDiv 
             $input_border={inputBorder} 
-            $display_shrinked={display_shrinked} 
-            $editor_display={editor_display}
+            $is_display_shrinked={is_display_shrinked} 
+            $is_editor_displayed={is_editor_displayed}
         >
             <div className="shrinked_stats_msg">
                 <p>Do you want information on <span>your</span> Shrinked Link?</p>
@@ -268,14 +282,14 @@ const ShrinkedStats = ({
                     type="text" 
                     placeholder="Input Shrinked Link" 
                     ref={ShrinkedStatsInputRef} 
-                    onClick={() => {
+                    onClick={():void => {
                         setShrinkedDataError("");
                         setIsShrinkedOutput(false);
                         }}
                 />
                 <button type="button" onClick={
                     isShrinkedOutput ? 
-                    ()=>setIsShrinkedOutput(false) : 
+                    ():void =>setIsShrinkedOutput(false) : 
                     showLinkStats
                     }>{outputButton}</button>
             </form>
@@ -284,7 +298,7 @@ const ShrinkedStats = ({
                 <div className={isShrinkedOutput ? "output_open" : "output_closed"}>
                     <p>
                         Your shrinked link, <span onClick={
-                    () => updateStats(stats_setter, ShrinkedStatsInputRef)
+                    ():void => updateStats(stats_setters, ShrinkedStatsInputRef)
                     }>
                         <a href={selected.link} target="_blank">{selected.link}</a>
                         </span>,

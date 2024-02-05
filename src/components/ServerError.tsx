@@ -19,7 +19,7 @@ const ServerError: FC = (): JSX.Element => {
     const [isAnimated, setisAnimated] = useState<boolean>(true);
 
     useEffect(()=>{
-        setTimeout(()=> setisAnimated(false), 10000)
+        setTimeout((): void => setisAnimated(false), 10000)
     }, []);
 
     return (

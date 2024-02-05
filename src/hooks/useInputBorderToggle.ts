@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 
-export default function useInputBorderToggle(
+const inputBorderToggle = (
     msg: string, 
-    bordersetter: (border: string) => void, 
-    bordererr: string, 
-    border: string
-    ) {
+    border_setter: (border_color: string) => void, 
+    border_color_err: string, 
+    border_color: string
+): void => {
     useEffect((): void =>{
-        msg.length > 0 ?
-        bordersetter(bordererr) :
-        bordersetter(border)
+        msg.length > 0 ? border_setter(border_color_err) : border_setter(border_color)
     }, [msg]);
 };
+
+export default inputBorderToggle;

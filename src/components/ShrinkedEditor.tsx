@@ -1,35 +1,34 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 
 import { LinkData, PersonalLinkData, StatsData } from "../types";
 import * as Color from "../colors";
-import asyncHandler from "../hooks/useAsyncHandler";
 import { patchShrinked } from "../api";
-import { updateStats } from "../hooks/useUpdateStats";
-import useInputBorderToggle from "../hooks/useInputBorderToggle";
+import asyncHandler from "../hooks/useAsyncHandler";
+import updateStats from "../hooks/useUpdateStats";
+import inputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface EditorDivProps {
     $is_displayed: boolean
-    $is_input: boolean
     $input_border: string
 }
 
 interface EditorProps {
-    new_shrink: LinkData,
-    shrink_setter: (new_shrink: LinkData) => void,
-    editor_display: boolean,
-    editor_setter: (editor_display: boolean) => void,
-    is_display_shrinked: (shrinked_display: boolean) => void
-    stats_setter: {
-        top_shrinks: Dispatch<SetStateAction<StatsData[]>>, 
-        top_visited: Dispatch<SetStateAction<StatsData[]>>, 
-        last_visited: Dispatch<SetStateAction<StatsData[]>>,
-        selected: Dispatch<SetStateAction<PersonalLinkData>>
+    new_shrinked: LinkData,
+    set_new_shrinked: (new_shrinked: LinkData) => void,
+    is_editor_displayed: boolean,
+    set_is_editor_displayed: (is_editor_displayed: boolean) => void,
+    set_is_display_shrinked: (is_display_shrinked: boolean) => void
+    stats_setters: {
+        set_top_shrinks: (top_shrinks: StatsData[]) => void,
+        set_top_visited: (top_visited: StatsData[]) => void,
+        set_last_visited: (last_visited: StatsData[]) => void,
+        set_selected: (selected: PersonalLinkData) => void
     }
 }
 
 const ShrinkedEditorDiv = styled.div<EditorDivProps>`
-    display: ${(props)=>props.$is_displayed ? "flex" : "none"};
+    display: ${(props): string => props.$is_displayed ? "flex" : "none"};
     flex-direction: column;
     gap: 1rem;
 
@@ -49,6 +48,11 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
 
         input {
             border: ${(props): string => props.$input_border} solid 1.5px;
+            font-size: 0.8rem;
+
+            @media only screen and (max-width: 880px){
+                font-size: 1.2rem;
+            }
         }
     }
 
@@ -68,12 +72,22 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
 
         input {
             border: ${(props): string => props.$input_border} solid 1.5px;
+            font-size: 0.8rem;
+
+            @media only screen and (max-width: 880px){
+                font-size: 1.2rem;
+            }
         }
     }
 
     .error_msg{
         font-size: 1rem;
         margin-top: 0.5rem;
+
+        @media only screen and (max-width: 880px){
+            position: relative;
+            left: 18%;
+        }
     }
 
     .shrink_again{
@@ -92,25 +106,25 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
 `
 
 const ShrinkedEditor = ({ 
-    new_shrink, 
-    shrink_setter,
-    editor_display,
-    editor_setter, 
-    is_display_shrinked,
-    stats_setter
+    new_shrinked, 
+    set_new_shrinked,
+    is_editor_displayed,
+    set_is_editor_displayed, 
+    set_is_display_shrinked,
+    stats_setters
 }: EditorProps): JSX.Element => {
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
     const [editorError, setEditorError] = useState<string>("");
     const [inputBorder, setInputBorder] = useState<string>(Color.inputOutline);
     const editorInputRef = useRef<HTMLInputElement>(null);
 
-    useInputBorderToggle(editorError, setInputBorder, Color.error, Color.inputOutline);
+    inputBorderToggle(editorError, setInputBorder, Color.error, Color.inputOutline);
 
     const editShrinked: () => void = asyncHandler(async (): Promise<void> => {
         const edited_shrink: string = (editorInputRef.current as HTMLInputElement).value.toString();
-        const data: LinkData = await patchShrinked(new_shrink, edited_shrink);
+        const data: LinkData = await patchShrinked(new_shrinked, edited_shrink);
             if (typeof data !== "string"){
-                shrink_setter({...data, _id: data._id.toString()}); 
+                set_new_shrinked({...data, _id: data._id.toString()}); 
                 (editorInputRef.current as HTMLInputElement).value = "";
                 setIsEditorInput(false);
             } else{
@@ -118,31 +132,30 @@ const ShrinkedEditor = ({
             }
     });
 
-    const shrinkAnother: () => void = () => {
-        editor_setter(false);
+    const shrinkAnother = (): void => {
+        set_is_editor_displayed(false);
         setIsEditorInput(false);
         setEditorError("");
-        setTimeout(()=>{
-            is_display_shrinked(false)
+        setTimeout(():void =>{
+            set_is_display_shrinked(false)
         },0)
     };
 
-    const toggleInput: () => void = () => {
+    const toggleInput = (): void => {
         isEditorInput ? setIsEditorInput(false) : setIsEditorInput(true);
         setEditorError("");
     }
 
     return (
         <ShrinkedEditorDiv 
-            $is_displayed={editor_display} 
-            $is_input={isEditorInput}
+            $is_displayed={is_editor_displayed} 
             $input_border={inputBorder}
         >
             <div className="shrinked_output">
                 <span onClick={
-                    () => updateStats(stats_setter)
+                    ():void => updateStats(stats_setters)
                     }>
-                    <a href={new_shrink.output} target="_blank">{new_shrink.output}</a>
+                    <a href={new_shrinked.output} target="_blank">{new_shrinked.output}</a>
                 </span>
                 <button type="button" onClick={toggleInput}>Edit Shrinked?</button>
             </div>
@@ -152,7 +165,7 @@ const ShrinkedEditor = ({
                         type="text" 
                         placeholder="Input New Shrinked" 
                         ref={editorInputRef} 
-                        onClick={() => setEditorError("")}
+                        onClick={():void => setEditorError("")}
                     />
                     <button type="button" onClick={editShrinked}>Submit</button>
                 </form>

@@ -18,15 +18,10 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
     }
 
     input{
-      font-size: 0.8rem;
       padding-left: 0.7rem;
       border-radius: 0.3rem;
       color: ${Color.mainText};
       font-family: "Griffy", cursive;
-
-      @media only screen and (max-width: 880px){
-        font-size: 1.2rem;
-      }
 
       &:focus{
         outline-width: 0;
@@ -100,5 +95,5 @@ export const GlobalStyle: React.NamedExoticComponent = createGlobalStyle`
       font: 16px 'Helvetica Neue',Arial;
       font-family: "Griffy", cursive;
     }
-  }
+  };
 `

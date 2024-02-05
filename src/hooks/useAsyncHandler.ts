@@ -1,4 +1,4 @@
-const asyncHandler = (fn: Function) => (...args: any[]) => 
-fn(...args).catch((err: Error)=> console.log(err));
+const asyncHandler = (fn: Function): any => (...args: any[]): any => 
+fn(...args).catch((err: Error):void => console.log(err));
 
 export default asyncHandler;

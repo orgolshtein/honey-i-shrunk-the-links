@@ -1,20 +1,20 @@
-import styled from "styled-components";
 import { Fragment } from "react";
+import styled from "styled-components";
 
 import { StatsData } from "../types";
 import * as Color from "../colors";
 
 interface StatsProps {
-    $display_shrinked: boolean
-    $editor_display: boolean
+    $is_display_shrinked: boolean
+    $is_editor_displayed: boolean
 }
 
 interface TopSitesProps {
     header: string
-    stat: string
+    stats_title: string
     stats_data: StatsData[]
-    display_shrinked: boolean
-    editor_display: boolean
+    is_display_shrinked: boolean
+    is_editor_displayed: boolean
 }
 
 const StatsGrid = styled.div<StatsProps>`
@@ -23,25 +23,31 @@ const StatsGrid = styled.div<StatsProps>`
     row-gap: .5rem;
     grid-template-rows:auto;
     width: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "42rem"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "3rem" : "42rem"
     };
     margin-left: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "10%"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "50%" : "10%"
     };
     font-size: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "1.1rem"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0.1rem" : "1.1rem"
     };
     text-align: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "center" : "left"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "center" : "left"
     };
     transition: all 1.5s;
 
     @media only screen and (max-width: 700px){
         width: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "3rem" : "70%"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "3rem" : "70%"
         };
         margin-left: ${
-            (props): string =>(props.$display_shrinked && props.$editor_display === false)? "50%" : "20%"
+            (props): string =>
+            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "50%" : "20%"
         };
     }
 
@@ -67,7 +73,8 @@ const StatsHeader = styled.h2<StatsProps>`
     grid-column-start: 1;
     grid-column-end: 3;
     font-size: ${
-        (props): string =>(props.$display_shrinked && props.$editor_display === false)? "0.1rem" : "2rem"
+        (props): string =>
+        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0.1rem" : "2rem"
     };
     font-weight: bold;
     text-align: center;
@@ -76,29 +83,34 @@ const StatsHeader = styled.h2<StatsProps>`
 
 const TopSites = ({
     header,
-    stat,
+    stats_title,
     stats_data,
-    display_shrinked,
-    editor_display
+    is_display_shrinked,
+    is_editor_displayed
 }: TopSitesProps): JSX.Element => (
-        <StatsGrid $display_shrinked={display_shrinked} $editor_display={editor_display}>
+        <StatsGrid 
+            $is_display_shrinked={is_display_shrinked} 
+            $is_editor_displayed={is_editor_displayed}
+        >
             <StatsHeader 
-                $display_shrinked={display_shrinked} 
-                $editor_display={editor_display}
+                $is_display_shrinked={is_display_shrinked} 
+                $is_editor_displayed={is_editor_displayed}
             >
                 {header}
             </StatsHeader>
             <div className="stat_head">Site</div>
-            <div className="stat stat_head">{stat}</div>
+            <div className="stat stat_head">{stats_title}</div>
             {
-            stats_data?.map((item, i) => (
-            <Fragment key={i}>
-                <div>{item.site.length > 49 ? item.site.substring(0,47) + "..." : item.site}</div>
-                <div className="stat">{stat === "Last Visit" ? item.visit_date : item.counter}</div>
-            </Fragment>
+            stats_data?.map((item: StatsData, i: number): JSX.Element => (
+                <Fragment key={i}>
+                    <div>{item.site.length > 49 ? item.site.substring(0,47) + "..." : item.site}</div>
+                    <div className="stat">
+                        {stats_title === "Last Visit" ? item.visit_date : item.counter}
+                    </div>
+                </Fragment>
             ))
             }
         </StatsGrid>
     );
 
-export default TopSites
+export default TopSites;

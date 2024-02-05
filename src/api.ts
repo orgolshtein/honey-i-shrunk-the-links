@@ -5,8 +5,12 @@ export const analytics_router: string = "/api/analytics";
 
 export const postNewShrinked = async (ref: React.RefObject<HTMLInputElement>): Promise<LinkData> => {
   const new_data: Response = await fetch(
-    `${server_link}/api/create`, { method: "POST", headers: {"Content-Type": "application/json",},
-      body: JSON.stringify({target: (ref.current as HTMLInputElement).value.toString()})});
+    `${server_link}/api/create`, 
+    { method: "POST", 
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({target: (ref.current as HTMLInputElement).value.toString()})
+    }
+  );
   const new_shrinked_object: LinkData = await new_data.json();
   return new_shrinked_object
 };
@@ -31,16 +35,24 @@ export const fetchLastVisited = async (): Promise<StatsData[]> => {
 
 export const fetchSelectedStats = async (ref: React.RefObject<HTMLInputElement>): Promise<PersonalLinkData> => {
  const selected_data: Response = await fetch(
-    `${server_link}${analytics_router}`, { method: "POST", headers: {"Content-Type": "application/json",},
-      body: JSON.stringify({shrinked: (ref.current as HTMLInputElement).value.toString()})});
+    `${server_link}${analytics_router}`, 
+    { method: "POST", 
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({shrinked: (ref.current as HTMLInputElement).value.toString()})
+    }
+  );
   const selected_stats_object: PersonalLinkData = await selected_data.json();
   return selected_stats_object
 };
 
-export const patchShrinked = async (link: LinkData, edited_shrink: string) => {
+export const patchShrinked = async (link: LinkData, edited_shrink: string): Promise<LinkData> => {
   const edited_data: Response = await fetch(
-    `${server_link}/api/edit/${link._id}`, { method: "PATCH", headers: {"Content-Type": "application/json",},
-      body: JSON.stringify({new_link: edited_shrink})});
+    `${server_link}/api/edit/${link._id}`, 
+    { method: "PATCH", 
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({new_link: edited_shrink})
+    }
+  );
   const edited_link_object: LinkData = await edited_data.json();
   return edited_link_object
 };
