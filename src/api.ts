@@ -3,6 +3,14 @@ import { LinkData, PersonalLinkData, StatsData } from "./types";
 export const server_link: string = "https://histl.onrender.com";
 export const analytics_router: string = "/api/analytics";
 
+export const riseAndShine = async (): Promise<void> => {
+  const urls: string[] = ["https://histl.onrender.com", "https://redrossent.onrender.com"];
+  urls.forEach(async (url: string, i: number)=>{
+      console.log(`Called server ${i+1}`)
+      await fetch(url);
+  })
+};
+
 export const postNewShrinked = async (ref: React.RefObject<HTMLInputElement>): Promise<LinkData> => {
   const new_data: Response = await fetch(
     `${server_link}/api/create`, 

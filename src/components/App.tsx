@@ -5,7 +5,7 @@ import { Carousel } from 'react-responsive-carousel';
 
 import { LinkData, PersonalLinkData, StatsData } from "../types"
 import * as Color from "../colors"
-import { fetchLastVisited, fetchTopShrinked, fetchTopVisited } from "../api";
+import * as api from "../api";
 import LinkInput from "./LinkInput"
 import PendingServer from "./PendingServer";
 import ServerError from "./ServerError";
@@ -170,11 +170,12 @@ const App: FC = (): JSX.Element => {
   useEffect((): void =>{
     (async (): Promise<void> => {
       try {
-        const shrinks_array: StatsData[] = await fetchTopShrinked();
+        api.riseAndShine();
+        const shrinks_array: StatsData[] = await api.fetchTopShrinked();
         setTopShrinked(shrinks_array);
-        const visited_array: StatsData[] = await fetchTopVisited();
+        const visited_array: StatsData[] = await api.fetchTopVisited();
         setTopVisited(visited_array)
-        const last_visited: StatsData[] = await fetchLastVisited();
+        const last_visited: StatsData[] = await api.fetchLastVisited();
         setLastVisited(last_visited)
         setTimeout((): void => setIsDisplayShrinked(false), 100)
       } catch {
