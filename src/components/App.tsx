@@ -3,7 +3,7 @@ import styled from "styled-components"
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 
-import { LinkData, PersonalLinkData, StatsData } from "../types"
+import { LinkData, StatsObject } from "../types"
 import * as Color from "../colors"
 import * as api from "../api";
 import LinkInput from "./LinkInput"
@@ -12,6 +12,7 @@ import ServerError from "./ServerError";
 import ShrinkedEditor from "./ShrinkedEditor"
 import TopSites from "./TopSites";
 import ShrinkedStats from "./ShrinkedStats";
+import useUpdateStats from "../hooks/useUpdateStats";
 
 interface MainContentProps {
   $is_display_shrinked: boolean
@@ -157,26 +158,23 @@ const App: FC = (): JSX.Element => {
   const [isServerLoading, setIsServerLoading] = useState<boolean>(true);
   const [isEditorDisplayed, setIsEditorDisplayed] = useState<boolean>(false);
   const [isDisplayShrinked, setIsDisplayShrinked] = useState<boolean>(true);
-  const [topShrinked, setTopShrinked] = useState<StatsData[]>([]);
-  const [topVisited, setTopVisited] = useState<StatsData[]>([]);
-  const [lastVisited, setLastVisited] = useState<StatsData[]>([]);
-  const [selectedShrinked, setSelectedShrinked] = useState<PersonalLinkData>({
-    target: "",
-    link: "",
-    visits: 0,
-    last_visit: ""
+  const [stats, setStats] = useState<StatsObject>({ 
+    top_shrinked: [], 
+    top_visited: [], 
+    last_visited: [], 
+    selected_shrinked: {
+      target: "",
+      link: "",
+      visits: 0,
+      last_visit: ""
+    }
   });
   
   useEffect((): void =>{
     (async (): Promise<void> => {
       try {
-        api.riseAndShine();
-        const shrinks_array: StatsData[] = await api.fetchTopShrinked();
-        setTopShrinked(shrinks_array);
-        const visited_array: StatsData[] = await api.fetchTopVisited();
-        setTopVisited(visited_array)
-        const last_visited: StatsData[] = await api.fetchLastVisited();
-        setLastVisited(last_visited)
+        await api.riseAndShine();
+        await useUpdateStats(setStats)
         setTimeout((): void => setIsDisplayShrinked(false), 100)
       } catch {
         setIsServerError(true);
@@ -212,12 +210,7 @@ const App: FC = (): JSX.Element => {
               is_editor_displayed={isEditorDisplayed}
               set_is_editor_displayed={setIsEditorDisplayed}
               set_is_display_shrinked={setIsDisplayShrinked}
-              stats_setters={{
-                set_top_shrinks: setTopShrinked, 
-                set_top_visited: setTopVisited, 
-                set_last_visited: setLastVisited,
-                set_selected: setSelectedShrinked
-              }}
+              stats_setters={setStats}
             />
           </div>
           <Carousel
@@ -239,33 +232,29 @@ const App: FC = (): JSX.Element => {
             <TopSites
               header="Top Shrinked Sites:"
               stats_title="Shrinks"
-              stats_data={topShrinked}
+              stats_data={stats.top_shrinked}
               is_display_shrinked={isDisplayShrinked}
               is_editor_displayed={isEditorDisplayed}
             />
             <TopSites
               header="Top Visited Sites:"
               stats_title="Visits"
-              stats_data={topVisited}
+              stats_data={stats.top_visited}
               is_display_shrinked={isDisplayShrinked}
               is_editor_displayed={isEditorDisplayed}
             />
             <TopSites
               header="Recently Visited:"
               stats_title="Last Visit"
-              stats_data={lastVisited}
+              stats_data={stats.last_visited}
               is_display_shrinked={isDisplayShrinked}
               is_editor_displayed={isEditorDisplayed}
             />
           </Carousel>
           <ShrinkedStats 
-            selected={selectedShrinked}
-            stats_setters={{
-              set_top_shrinks: setTopShrinked, 
-              set_top_visited: setTopVisited, 
-              set_last_visited: setLastVisited,
-              set_selected: setSelectedShrinked
-            }}
+            selected={stats.selected_shrinked}
+            stats={stats}
+            stats_setters={setStats}
             set_is_editor_displayed={setIsEditorDisplayed}
             set_is_display_shrinked={setIsDisplayShrinked}
             is_display_shrinked={isDisplayShrinked}

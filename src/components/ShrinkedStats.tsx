@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { PersonalLinkData, StatsData } from "../types";
+import { PersonalLinkData, StatsObject } from "../types";
 import * as Color from "../colors";
 import { fetchSelectedStats } from "../api";
 import asyncHandler from "../hooks/useAsyncHandler";
-import updateStats from "../hooks/useUpdateStats";
+import useUpdateStats from "../hooks/useUpdateStats";
 import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface ShrinkedStatsDivProps {
@@ -15,16 +15,12 @@ interface ShrinkedStatsDivProps {
 }
 
 interface ShrinkedStatsProps {
-    selected: PersonalLinkData
-    stats_setters: {
-        set_top_shrinks: (top_shrinks: StatsData[]) => void,
-        set_top_visited: (top_visited: StatsData[]) => void,
-        set_last_visited: (last_visited: StatsData[]) => void,
-        set_selected: (selected: PersonalLinkData) => void
-    }
+    selected: PersonalLinkData,
+    stats: StatsObject,
+    stats_setters: (stats: StatsObject) => void,
     set_is_editor_displayed: (is_editor_displayed: boolean) => void,
-    set_is_display_shrinked: (is_display_shrinked: boolean) => void
-    is_display_shrinked: boolean
+    set_is_display_shrinked: (is_display_shrinked: boolean) => void,
+    is_display_shrinked: boolean,
     is_editor_displayed: boolean
 };
 
@@ -228,22 +224,23 @@ const StatsOutputDiv = styled.div<StatsOutputDivProps>`
 
 const ShrinkedStats = ({
     selected,
+    stats,
     stats_setters,
     set_is_editor_displayed,
     set_is_display_shrinked,
     is_display_shrinked,
     is_editor_displayed
 }: ShrinkedStatsProps): JSX.Element => {
-    const [isShrinkedOutput, setIsShrinkedOutput] = useState<boolean>(false);
+    const [isOutput, setIsOutput] = useState<boolean>(false);
     const [outputButton, setOutputButton] = useState<string>("Show");
     const ShrinkedStatsInputRef = useRef<HTMLInputElement>(null);
     const inputBorder = useInputBorderToggle(Color.error, Color.inputOutline);
 
     useEffect(():void => {
-        isShrinkedOutput?
+        isOutput?
         setOutputButton("Close") :
         setOutputButton("Show")
-    }, [isShrinkedOutput])
+    }, [isOutput])
 
     const showLinkStats: () => void = asyncHandler(async (): Promise<void> => {
         inputBorder.setInputError("");
@@ -251,14 +248,24 @@ const ShrinkedStats = ({
         set_is_editor_displayed(false);
         const data: PersonalLinkData | string = await fetchSelectedStats(ShrinkedStatsInputRef);
         if (typeof data !== "string"){
-            stats_setters.set_selected({...data})
-            setIsShrinkedOutput(true);
+            stats_setters({
+                top_shrinked: stats.top_shrinked,
+                top_visited: stats.top_visited,
+                last_visited: stats.last_visited,
+                selected_shrinked: {...data}
+            })
+            setIsOutput(true);
         } else {
-            stats_setters.set_selected({
-                target: "",
-                link: "",
-                visits: 0,
-                last_visit: ""
+            stats_setters({
+                top_shrinked: stats.top_shrinked,
+                top_visited: stats.top_visited,
+                last_visited: stats.last_visited,
+                selected_shrinked: {
+                    target: "",
+                    link: "",
+                    visits: 0,
+                    last_visit: ""
+                }
             });
             inputBorder.setInputError(data)
         }
@@ -281,21 +288,21 @@ const ShrinkedStats = ({
                     ref={ShrinkedStatsInputRef} 
                     onClick={():void => {
                         inputBorder.setInputError("");
-                        setIsShrinkedOutput(false);
+                        setIsOutput(false);
                         }}
                 />
                 <button type="button" onClick={
-                    isShrinkedOutput ? 
-                    ():void =>setIsShrinkedOutput(false) : 
+                    isOutput ? 
+                    ():void =>setIsOutput(false) : 
                     showLinkStats
                     }>{outputButton}</button>
             </form>
             <p className="error_msg">{inputBorder.inputError}</p>
-            <StatsOutputDiv $is_output_displayed={isShrinkedOutput}>
-                <div className={isShrinkedOutput ? "output_open" : "output_closed"}>
+            <StatsOutputDiv $is_output_displayed={isOutput}>
+                <div className={isOutput ? "output_open" : "output_closed"}>
                     <p>
                         Your shrinked link, <span onClick={
-                    ():void => updateStats(stats_setters, ShrinkedStatsInputRef)
+                    ():void => useUpdateStats(stats_setters, ShrinkedStatsInputRef)
                     }>
                         <a href={selected.link} target="_blank">{selected.link}</a>
                         </span>,

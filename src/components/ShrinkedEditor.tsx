@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
 
-import { LinkData, PersonalLinkData, StatsData } from "../types";
+import { LinkData, StatsObject } from "../types";
 import * as Color from "../colors";
 import { patchShrinked } from "../api";
 import asyncHandler from "../hooks/useAsyncHandler";
@@ -18,13 +18,8 @@ interface EditorProps {
     set_new_shrinked: (new_shrinked: LinkData) => void,
     is_editor_displayed: boolean,
     set_is_editor_displayed: (is_editor_displayed: boolean) => void,
-    set_is_display_shrinked: (is_display_shrinked: boolean) => void
-    stats_setters: {
-        set_top_shrinks: (top_shrinks: StatsData[]) => void,
-        set_top_visited: (top_visited: StatsData[]) => void,
-        set_last_visited: (last_visited: StatsData[]) => void,
-        set_selected: (selected: PersonalLinkData) => void
-    }
+    set_is_display_shrinked: (is_display_shrinked: boolean) => void,
+    stats_setters: (stats: StatsObject) => void
 }
 
 const ShrinkedEditorDiv = styled.div<EditorDivProps>`

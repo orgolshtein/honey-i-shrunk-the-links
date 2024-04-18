@@ -1,25 +1,29 @@
-import { fetchTopShrinked, fetchTopVisited, fetchLastVisited, fetchSelectedStats } from "../api";
-import { PersonalLinkData, StatsData } from "../types";
+import * as api from "../api";
+import { PersonalLinkData, StatsData, StatsObject } from "../types";
 import asyncHandler from "./useAsyncHandler";
 
-const updateStats = asyncHandler(async (
-    stats_setters: {
-        set_top_shrinks: (top_shrinks: StatsData[]) => void,
-        set_top_visited: (top_visited: StatsData[]) => void,
-        set_last_visited: (last_visited: StatsData[]) => void,
-        set_selected: (selected: PersonalLinkData) => void
-    }, input_ref?: React.RefObject<HTMLInputElement>
+const useUpdateStats = asyncHandler(async (
+    stats_setters: (stats: StatsObject)=> void, 
+    input_ref?: React.RefObject<HTMLInputElement>
 ): Promise<void> => {
-    const shrinks_array: StatsData[] = await fetchTopShrinked();
-    stats_setters.set_top_shrinks(shrinks_array);
-    const visited_array: StatsData[] = await fetchTopVisited();
-    stats_setters.set_top_visited(visited_array)
-    const last_visited: StatsData[] = await fetchLastVisited();
-    stats_setters.set_last_visited(last_visited);
-    if (input_ref){
-        const selected_link: PersonalLinkData = await fetchSelectedStats(input_ref);
-        stats_setters.set_selected(selected_link);
-    }
+    const shrinks_array: StatsData[] = await api.fetchTopShrinked();
+    const visited_array: StatsData[] = await api.fetchTopVisited();
+    const last_visited: StatsData[] = await api.fetchLastVisited();
+    let selected_link!: PersonalLinkData;
+    input_ref?
+        selected_link = await api.fetchSelectedStats(input_ref):
+        selected_link = {
+            target: "",
+            link: "",
+            visits: 0,
+            last_visit: ""
+        };
+    stats_setters({
+        top_shrinked: shrinks_array,
+        top_visited: visited_array,
+        last_visited: last_visited,
+        selected_shrinked: selected_link
+    })
 });
 
-export default updateStats;
+export default useUpdateStats;
