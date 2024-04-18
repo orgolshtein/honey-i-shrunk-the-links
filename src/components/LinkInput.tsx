@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import { LinkData } from "../types";
 import * as Color from "../colors";
 import { postNewShrinked } from "../api";
 import asyncHandler from "../hooks/useAsyncHandler";
-import inputBorderToggle from "../hooks/useInputBorderToggle";
+import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface InputDivProps {
     $is_editor_displayed: boolean
@@ -49,12 +49,9 @@ const LinkInput = ({
     set_is_editor_displayed, 
     set_is_display_shrinked 
 }: LinkInputProps): JSX.Element => {
-    const [inputError, setInputError] = useState<string>("");
-    const [inputBorder, setInputBorder] = useState<string>(Color.inputOutline);
     const linkInputRef = useRef<HTMLInputElement>(null);
     const linkInputSubmitRef = useRef<HTMLButtonElement>(null);
-
-    inputBorderToggle(inputError, setInputBorder, Color.error, Color.inputOutline);
+    const inputBorder = useInputBorderToggle(Color.error, Color.inputOutline);
     
     useEffect((): void => {
         window.addEventListener("keypress", function(event) {
@@ -75,7 +72,7 @@ const LinkInput = ({
             }, 100)
         } else{
             set_new_shrinked({_id: "", output: ""});
-            setInputError(data)
+            inputBorder.setInputError(data)
         };
 
                 // set_new_shrinked({_id: "", output: "link_placeholder"});
@@ -90,18 +87,18 @@ const LinkInput = ({
     return (
         <LinkInputDiv 
         $is_editor_displayed={is_editor_displayed} 
-        $input_border={inputBorder}
+        $input_border={inputBorder.inputBorder}
         >
             <form action="">
                 <input 
                     type="text" 
                     placeholder="Input Link to Shrink" 
                     ref={linkInputRef} 
-                    onClick={():void => setInputError("")}
+                    onClick={():void => inputBorder.setInputError("")}
                 />
                 <button type="button" ref={linkInputSubmitRef} onClick={shrinkLink}>Submit</button>
             </form>
-            <p className="error_msg">{inputError}</p>
+            <p className="error_msg">{inputBorder.inputError}</p>
         </LinkInputDiv>
       )
 };

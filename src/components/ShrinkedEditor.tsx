@@ -6,7 +6,7 @@ import * as Color from "../colors";
 import { patchShrinked } from "../api";
 import asyncHandler from "../hooks/useAsyncHandler";
 import updateStats from "../hooks/useUpdateStats";
-import inputBorderToggle from "../hooks/useInputBorderToggle";
+import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface EditorDivProps {
     $is_displayed: boolean
@@ -114,11 +114,8 @@ const ShrinkedEditor = ({
     stats_setters
 }: EditorProps): JSX.Element => {
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
-    const [editorError, setEditorError] = useState<string>("");
-    const [inputBorder, setInputBorder] = useState<string>(Color.inputOutline);
     const editorInputRef = useRef<HTMLInputElement>(null);
-
-    inputBorderToggle(editorError, setInputBorder, Color.error, Color.inputOutline);
+    const inputBorder = useInputBorderToggle(Color.error, Color.inputOutline);
 
     const editShrinked: () => void = asyncHandler(async (): Promise<void> => {
         const edited_shrink: string = (editorInputRef.current as HTMLInputElement).value.toString();
@@ -128,14 +125,14 @@ const ShrinkedEditor = ({
                 (editorInputRef.current as HTMLInputElement).value = "";
                 setIsEditorInput(false);
             } else{
-                setEditorError(data);
+                inputBorder.setInputError(data);
             }
     });
 
     const shrinkAnother = (): void => {
         set_is_editor_displayed(false);
         setIsEditorInput(false);
-        setEditorError("");
+        inputBorder.setInputError("");
         setTimeout(():void =>{
             set_is_display_shrinked(false)
         },0)
@@ -143,13 +140,13 @@ const ShrinkedEditor = ({
 
     const toggleInput = (): void => {
         isEditorInput ? setIsEditorInput(false) : setIsEditorInput(true);
-        setEditorError("");
+        inputBorder.setInputError("");
     }
 
     return (
         <ShrinkedEditorDiv 
             $is_displayed={is_editor_displayed} 
-            $input_border={inputBorder}
+            $input_border={inputBorder.inputBorder}
         >
             <div className="shrinked_output">
                 <span onClick={
@@ -165,11 +162,11 @@ const ShrinkedEditor = ({
                         type="text" 
                         placeholder="Input New Shrinked" 
                         ref={editorInputRef} 
-                        onClick={():void => setEditorError("")}
+                        onClick={():void => inputBorder.setInputError("")}
                     />
                     <button type="button" onClick={editShrinked}>Submit</button>
                 </form>
-                {editorError !== "" ? <p className="error_msg">{editorError}</p> : null}
+                {inputBorder.inputError !== "" ? <p className="error_msg">{inputBorder.inputError}</p> : null}
             </div>
             <button 
                 className="shrink_again" 
