@@ -5,16 +5,16 @@ import { StatsData } from "../types";
 import * as Color from "../colors";
 
 interface StatsProps {
-    $is_display_shrinked: boolean
-    $is_editor_displayed: boolean
+    $is_display_small: boolean
+    $is_shrinked_output: boolean
 }
 
 interface TopSitesProps {
     header: string
     stats_title: string
     stats_data: StatsData[]
-    is_display_shrinked: boolean
-    is_editor_displayed: boolean
+    is_display_small: boolean
+    is_shrinked_output: boolean
 }
 
 const StatsGrid = styled.div<StatsProps>`
@@ -24,30 +24,30 @@ const StatsGrid = styled.div<StatsProps>`
     grid-template-rows:auto;
     width: ${
         (props): string =>
-        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "3rem" : "42rem"
+        (props.$is_display_small && props.$is_shrinked_output === false)? "3rem" : "42rem"
     };
     margin-left: ${
         (props): string =>
-        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "50%" : "10%"
+        (props.$is_display_small && props.$is_shrinked_output === false)? "50%" : "10%"
     };
     font-size: ${
         (props): string =>
-        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0.1rem" : "1.1rem"
+        (props.$is_display_small && props.$is_shrinked_output === false)? "0.1rem" : "1.1rem"
     };
     text-align: ${
         (props): string =>
-        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "center" : "left"
+        (props.$is_display_small && props.$is_shrinked_output === false)? "center" : "left"
     };
     transition: all 1.5s;
 
     @media only screen and (max-width: 700px){
         width: ${
             (props): string =>
-            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "3rem" : "70%"
+            (props.$is_display_small && props.$is_shrinked_output === false)? "3rem" : "70%"
         };
         margin-left: ${
             (props): string =>
-            (props.$is_display_shrinked && props.$is_editor_displayed === false)? "50%" : "20%"
+            (props.$is_display_small && props.$is_shrinked_output === false)? "50%" : "20%"
         };
     }
 
@@ -74,7 +74,7 @@ const StatsHeader = styled.h2<StatsProps>`
     grid-column-end: 3;
     font-size: ${
         (props): string =>
-        (props.$is_display_shrinked && props.$is_editor_displayed === false)? "0.1rem" : "2rem"
+        (props.$is_display_small && props.$is_shrinked_output === false)? "0.1rem" : "2rem"
     };
     font-weight: bold;
     text-align: center;
@@ -85,16 +85,16 @@ const TopSites = ({
     header,
     stats_title,
     stats_data,
-    is_display_shrinked,
-    is_editor_displayed
+    is_display_small,
+    is_shrinked_output
 }: TopSitesProps): JSX.Element => (
         <StatsGrid 
-            $is_display_shrinked={is_display_shrinked} 
-            $is_editor_displayed={is_editor_displayed}
+            $is_display_small={is_display_small} 
+            $is_shrinked_output={is_shrinked_output}
         >
             <StatsHeader 
-                $is_display_shrinked={is_display_shrinked} 
-                $is_editor_displayed={is_editor_displayed}
+                $is_display_small={is_display_small} 
+                $is_shrinked_output={is_shrinked_output}
             >
                 {header}
             </StatsHeader>

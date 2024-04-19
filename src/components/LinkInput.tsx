@@ -8,19 +8,19 @@ import asyncHandler from "../hooks/useAsyncHandler";
 import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
 interface InputDivProps {
-    $is_editor_displayed: boolean
+    $is_shrinked_output: boolean
     $input_border: string
 }
 
 interface LinkInputProps {
     set_new_shrinked: (new_shrink: LinkData) => void,
-    is_editor_displayed: boolean,
-    set_is_editor_displayed: (is_editor_displayed: boolean) => void,
-    set_is_display_shrinked: (is_display_shrinked: boolean) => void
+    is_shrinked_output: boolean,
+    set_is_shrinked_output: (is_shrinked_output: boolean) => void,
+    set_is_display_small: (is_display_small: boolean) => void
 }
 
 const LinkInputDiv = styled.div<InputDivProps>`
-    display: ${(props): string => props.$is_editor_displayed ? "none" : "block"};
+    display: ${(props): string => props.$is_shrinked_output ? "none" : "block"};
     position: relative;
     top: 2%;
 
@@ -45,9 +45,9 @@ const LinkInputDiv = styled.div<InputDivProps>`
 
 const LinkInput = ({ 
     set_new_shrinked, 
-    is_editor_displayed, 
-    set_is_editor_displayed, 
-    set_is_display_shrinked 
+    is_shrinked_output, 
+    set_is_shrinked_output, 
+    set_is_display_small 
 }: LinkInputProps): JSX.Element => {
     const linkInputRef = useRef<HTMLInputElement>(null);
     const linkInputSubmitRef = useRef<HTMLButtonElement>(null);
@@ -66,9 +66,9 @@ const LinkInput = ({
         const data: LinkData | string = await postNewShrinked(linkInputRef);
         if (typeof data !== "string"){
             set_new_shrinked({...data, _id: data._id.toString()});
-            set_is_editor_displayed(true);
+            set_is_shrinked_output(true);
             setTimeout(():void => {
-                set_is_display_shrinked(true)
+                set_is_display_small(true)
             }, 100)
         } else{
             set_new_shrinked({_id: "", output: ""});
@@ -76,9 +76,9 @@ const LinkInput = ({
         };
 
                 // set_new_shrinked({_id: "", output: "link_placeholder"});
-                // set_is_editor_displayed(true);
+                // set_is_shrinked_output(true);
                 // setTimeout(()=>{
-                //         set_is_display_shrinked(true)
+                //         set_is_display_small(true)
                 //     }, 100);
 
         (linkInputRef.current as HTMLInputElement).value = "";
@@ -86,7 +86,7 @@ const LinkInput = ({
 
     return (
         <LinkInputDiv 
-        $is_editor_displayed={is_editor_displayed} 
+        $is_shrinked_output={is_shrinked_output} 
         $input_border={inputBorder.inputBorder}
         >
             <form action="">

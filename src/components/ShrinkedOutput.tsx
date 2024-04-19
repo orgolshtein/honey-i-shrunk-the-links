@@ -8,21 +8,21 @@ import asyncHandler from "../hooks/useAsyncHandler";
 import updateStats from "../hooks/useUpdateStats";
 import useInputBorderToggle from "../hooks/useInputBorderToggle";
 
-interface EditorDivProps {
+interface ShrinkedOutputDivProps {
     $is_displayed: boolean
     $input_border: string
 }
 
-interface EditorProps {
+interface ShrinkedOutputProps {
     new_shrinked: LinkData,
     set_new_shrinked: (new_shrinked: LinkData) => void,
-    is_editor_displayed: boolean,
-    set_is_editor_displayed: (is_editor_displayed: boolean) => void,
-    set_is_display_shrinked: (is_display_shrinked: boolean) => void,
+    is_shrinked_output: boolean,
+    set_is_shrinked_output: (is_shrinked_output: boolean) => void,
+    set_is_display_small: (is_display_small: boolean) => void,
     stats_setters: (stats: StatsObject) => void
 }
 
-const ShrinkedEditorDiv = styled.div<EditorDivProps>`
+const ShrinkedOutputDiv = styled.div<ShrinkedOutputDivProps>`
     display: ${(props): string => props.$is_displayed ? "flex" : "none"};
     flex-direction: column;
     gap: 1rem;
@@ -100,14 +100,14 @@ const ShrinkedEditorDiv = styled.div<EditorDivProps>`
     }
 `
 
-const ShrinkedEditor = ({ 
+const ShrinkedOutput = ({ 
     new_shrinked, 
     set_new_shrinked,
-    is_editor_displayed,
-    set_is_editor_displayed, 
-    set_is_display_shrinked,
+    is_shrinked_output,
+    set_is_shrinked_output, 
+    set_is_display_small,
     stats_setters
-}: EditorProps): JSX.Element => {
+}: ShrinkedOutputProps): JSX.Element => {
     const [isEditorInput, setIsEditorInput] = useState<boolean>(false);
     const editorInputRef = useRef<HTMLInputElement>(null);
     const inputBorder = useInputBorderToggle(Color.error, Color.inputOutline);
@@ -125,11 +125,11 @@ const ShrinkedEditor = ({
     });
 
     const shrinkAnother = (): void => {
-        set_is_editor_displayed(false);
+        set_is_shrinked_output(false);
         setIsEditorInput(false);
         inputBorder.setInputError("");
         setTimeout(():void =>{
-            set_is_display_shrinked(false)
+            set_is_display_small(false)
         },0)
     };
 
@@ -139,8 +139,8 @@ const ShrinkedEditor = ({
     }
 
     return (
-        <ShrinkedEditorDiv 
-            $is_displayed={is_editor_displayed} 
+        <ShrinkedOutputDiv 
+            $is_displayed={is_shrinked_output} 
             $input_border={inputBorder.inputBorder}
         >
             <div className="shrinked_output">
@@ -168,8 +168,8 @@ const ShrinkedEditor = ({
                 type="button" 
                 onClick={shrinkAnother}
             >Shrink Another Link?</button>
-        </ShrinkedEditorDiv>
+        </ShrinkedOutputDiv>
     )
 };
 
-export default ShrinkedEditor;
+export default ShrinkedOutput;
